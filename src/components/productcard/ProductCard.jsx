@@ -2,10 +2,10 @@ import { Eye, Heart, ShoppingBag, Star } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import CartButton from '../layouts/buttons/CartButton';
 
-const ProductCard = ({product}) => {
-
-  const { title, image, review, price, sold } = product || {};
+const ProductCard = ({ product }) => {
+  const { title, image, review, price, sold, _id } = product || {};
   return (
     <div className="group relative rounded-2xl overflow-hidden bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full">
       <div className="relative w-full h-64 bg-gray-50/50 flex items-center justify-center p-6 overflow-hidden">
@@ -16,7 +16,7 @@ const ProductCard = ({product}) => {
           height={500}
           className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-700 ease-in-out"
         />
-        <button className="absolute top-4 right-4 bg-white p-2.5 rounded-full shadow-sm opacity-0 translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 hover:bg-green-50 hover:text-green-600 transition-all duration-300 z-10 text-gray-400">
+        <button className="absolute top-4 right-4 bg-white p-2.5 rounded-full shadow-sm   hover:bg-green-50 hover:text-green-600  duration-300 z-10 text-gray-400">
           <Heart size={18} className="transition-colors" />
         </button>
         {/* Badge */}
@@ -34,12 +34,7 @@ const ProductCard = ({product}) => {
         </div>
         {/* Quick View Overlay */}
         <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-10">
-          <Link href={`/products/${product?._id}`}>
-            <button className="w-full bg-white/90 backdrop-blur text-green-700 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold hover:bg-green-600 hover:text-white transition-colors shadow-lg border border-green-100">
-              <Eye size={18} />
-              Add To Cart
-            </button>
-          </Link>
+          <CartButton product={{...product, _id: _id.toString()}}></CartButton>
         </div>
       </div>
       <div className="p-6 flex flex-col flex-grow:1">
@@ -69,7 +64,11 @@ const ProductCard = ({product}) => {
           </div>
 
           <button>
-            <ShoppingBag size={20} className="group-hover/btn:scale-110 transition-transform" />
+            {/* view Details Button */}
+            <div className="w-full bg-white/90 backdrop-blur text-green-700 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-semibold hover:bg-green-600 hover:text-white transition-colors shadow-lg border border-green-100">
+              <Link href={`/products/${product?._id}`}>View Details</Link>
+              <ShoppingBag size={20} className="group-hover/btn:scale-110 transition-transform" />
+            </div>
           </button>
         </div>
       </div>

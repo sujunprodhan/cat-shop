@@ -3,6 +3,7 @@ import { Menu, X, Search } from 'lucide-react';
 import Navlink from './buttons/NavLink';
 import { useState } from 'react';
 import Link from 'next/link';
+import AuthButton from './buttons/AuthButton';
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -38,19 +39,8 @@ const Navbar = () => {
           <Search className="w-5 h-5 cursor-pointer items-center text-gray-600 hover:text-black" />
 
           {/* Auth Buttons */}
-          <div className="flex gap-3">
-            <Link
-              href="/login"
-              className="px-4 py-1 border rounded-lg hover:bg-gray-100"
-            >
-              Login
-            </Link>
-            <Link
-              href="/register"
-              className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-              Register
-            </Link>
+          <div>
+            <AuthButton></AuthButton>
           </div>
         </div>
 

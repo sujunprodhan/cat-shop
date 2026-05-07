@@ -3,8 +3,16 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Eye, EyeOff } from 'lucide-react';
+import { postUser } from '@/actions/server/auth';
+import { useRouter, useSearchParams } from 'next/navigation';
+import GoogleLogin from '../layouts/buttons/GoogleLogin';
+import { signIn } from 'next-auth/react';
+import Swal from 'sweetalert2';
 
 export default function RegisterForm() {
+  const params = useSearchParams();
+  const router = useRouter();
+  const callbackUrl = params.get('callbackUrl') || '/login';
   const {
     register,
     handleSubmit,
@@ -13,14 +21,37 @@ export default function RegisterForm() {
   } = useForm();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-
-  const password = watch('password');
 
   const onSubmit = async (data) => {
-    console.log(data);
-    await new Promise((res) => setTimeout(res, 1500));
-    alert('Registered Successfully!');
+    const result = await postUser({
+      name: data.name,
+      email: data.email,
+      password: data.password,
+    });
+    if (result.acknowledged) {
+      const result = await signIn('credentials', {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+        callbackUrl: callbackUrl,
+      });
+      if (result.ok) {
+        await Swal.fire({
+          icon: 'success',
+          title: 'Login Successful',
+          text: 'Welcome back!',
+          confirmButtonColor: '#22c55e',
+        });
+        router.push('/login');
+      }
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Login Failed',
+        text: result?.error || 'Invalid credentials',
+        confirmButtonColor: '#ef4444',
+      });
+    }
   };
 
   return (
@@ -91,6 +122,7 @@ export default function RegisterForm() {
             {isSubmitting ? 'Registering...' : 'Register'}
           </button>
         </form>
+        <GoogleLogin></GoogleLogin>
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import { getSingleProduct } from '@/actions/server/product';
+import CartButton from '@/components/layouts/buttons/CartButton';
 import ProductTabs from '@/components/producttab/ProductTabs';
 
 import { ArrowLeft, ShieldCheck, Star, Truck } from 'lucide-react';
@@ -87,9 +88,7 @@ const ProductDetails = async ({ params }) => {
               </div>
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 mb-10">
-                <button className="flex-1 bg-white hover:bg-gray-50 text-black border border-green-600 px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all transform active:scale-95">
-                  Add To Cart
-                </button>
+                <CartButton product={product}></CartButton>
                 <button className="flex-1 bg-white hover:bg-gray-50 text-black border border-green-600 px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all transform active:scale-95">
                   Buy Now
                 </button>
