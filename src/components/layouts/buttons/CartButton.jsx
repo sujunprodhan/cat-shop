@@ -1,38 +1,84 @@
 'use client';
 
 import { handleCart } from '@/actions/server/cart';
-import { Eye } from 'lucide-react';
+import { Check, Loader2, ShoppingCart } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import Swal from 'sweetalert2';
 
 const CartButton = ({ product }) => {
-  const session = useSession();
+  const { data: session, status } = useSession();
+
   const path = usePathname();
   const router = useRouter();
-  const isLogin = session?.status == 'authenticated';
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const isLogin = status === 'authenticated';
 
   const addToCart = async () => {
+    setIsLoading(true);
+
     if (isLogin) {
-      const user = session?.data?.user;
-      const result = await handleCart({ product, inc: true, user });
+      const result = await handleCart({
+        product,
+        inc: true,
+      });
+
       if (result.success) {
-        Swal.fire('Product added', product.title, 'success');
+        setIsSuccess(true);
+
+        setTimeout(async () => {
+          await Swal.fire({
+            icon: 'success',
+            title: 'Added to Cart',
+            text: `${product.title} added successfully`,
+            timer: 1500,
+            showConfirmButton: false,
+          });
+
+          setIsSuccess(false);
+        }, 800);
       } else {
-        Swal.fire('Ops', 'SomeThing Is Wrong', 'error');
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Something went wrong!',
+        });
       }
+
+      setIsLoading(false);
     } else {
+      setIsLoading(false);
       router.push(`/login?callback=${path}`);
     }
   };
+
   return (
     <div>
       <button
+        disabled={status === 'loading' || isLoading}
         onClick={addToCart}
-        className="w-full bg-white/90 backdrop-blur text-green-700 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold hover:bg-green-600 hover:text-white transition-colors shadow-lg border border-green-100"
+        className="w-full bg-white/90 backdrop-blur text-green-700 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold hover:bg-green-600 hover:text-white transition-all shadow-lg border border-green-100 disabled:opacity-70"
       >
-        Add To Cart
-        <Eye size={18} />
+        {isLoading ? (
+          <>
+            <Loader2 className="animate-spin" size={18} />
+            Adding...
+          </>
+        ) : isSuccess ? (
+          <>
+            <Check size={18} />
+            Added
+          </>
+        ) : (
+          <>
+            <ShoppingCart size={18} />
+            Add To Cart
+          </>
+        )}
       </button>
     </div>
   );

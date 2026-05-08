@@ -1,5 +1,5 @@
 'use client';
-import { Menu, X, Search } from 'lucide-react';
+import { Menu, X, Search, ShoppingCart } from 'lucide-react';
 import Navlink from './buttons/NavLink';
 import { useState } from 'react';
 import Link from 'next/link';
@@ -29,12 +29,16 @@ const Navbar = () => {
     <nav className="w-full shadow-md bg-white">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
-        <div className="text-2xl font-bold text-blue-600">MyLogo</div>
+        <div className="text-3xl font-bold text-green-600">
+          CAT<span className="text-gray-600">SHOP</span>
+        </div>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8 list-none">
           <div className="flex gap-6">{navItems}</div>
-
+          <Link href="/cart">
+            <ShoppingCart size={18} className="text-green-500" />
+          </Link>
           {/* Search Icon */}
           <Search className="w-5 h-5 cursor-pointer items-center text-gray-600 hover:text-black" />
 
