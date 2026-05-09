@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
+import { Minus, Plus, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { decreaseItemDb, deleteItemCart, increaseItemDb } from '@/actions/server/cart';
 import Swal from 'sweetalert2';
@@ -131,7 +131,9 @@ const decreaseQty = async () => {
 
       {/* Decorative summary line for Ultra look */}
       <div className="mt-6 flex justify-end">
-        <div className="h-1 w-24 bg-emerald-100 rounded-full"></div>
+        <div className="h-1 w-24 bg-emerald-100 rounded-full">
+          
+        </div>
       </div>
     </div>
   );
