@@ -2,15 +2,23 @@
 import React, { useState } from 'react';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 import Image from 'next/image';
-import { deleteItemCart } from '@/actions/server/cart';
+import { deleteItemCart, increaseItemDb } from '@/actions/server/cart';
 import Swal from 'sweetalert2';
 
-const CartPage = ({ item, removeItem }) => {
-  // Destructuring with fallbacks
-  const { title = 'Premium Product', image, price = 0, _id } = item || {};
-  const [quantity, setQuantity] = useState(item?.quantity || 1);
-  const increaseQty = () => setQuantity((prev) => prev + 1);
-  const decreaseQty = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+const CartPage = ({ item, removeItem, updateQuantity }) => {
+  const { title = 'Premium Product', quantity, image, price = 0, _id } = item || {};
+
+  // Increase data on DB Collection
+  const increaseQty = async () => {
+    const result = await increaseItemDb(_id, quantity + 1);
+    console.log(result);
+    
+    if (result.success) {
+      Swal.fire('success', 'quantity added', 'success');
+      updateQuantity(_id, quantity + 1);
+    }
+  };
+
   const handleRemove = async () => {
     Swal.fire({
       title: 'Are you sure?',
@@ -23,9 +31,9 @@ const CartPage = ({ item, removeItem }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const result = (await deleteItemCart(_id)) || {};
-       
+
         if (result.success) {
-           removeItem(_id);
+          removeItem(_id);
           Swal.fire({
             title: 'Deleted!',
             text: 'Your file has been deleted.',
@@ -68,7 +76,7 @@ const CartPage = ({ item, removeItem }) => {
         {/* Quantity Controller - Professional Green Style */}
         <div className="flex items-center gap-5  rounded-full px-3  border-green-100 border shadow-md">
           <button
-            onClick={decreaseQty}
+            // onClick={decreaseQty}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-gray-600"
           >
             <Minus size={16} strokeWidth={1} className="text-gray-600" />

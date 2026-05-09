@@ -57,7 +57,7 @@ export const authOptions = {
       }
       return session;
     },
-    async jwt({ token, user, account, profile, isNewUser }) {
+    async jwt({ token, user, account }) {
       console.log('account data in token', account);
 
       if (user) {
@@ -65,10 +65,10 @@ export const authOptions = {
           const dbUser = await dbConnect(Collection.USERS).findOne({
             email: user.email,
           });
-          token.role = dbUser?.role,
-          token.email = dbUser?.email
-        }else{
-          token.role = user?.role,
+          token.role = dbUser?.role || 'users'
+          token.email = dbUser?.email;
+        } else {
+          token.role = user?.role;
           token.email = user?.email;
         }
       }

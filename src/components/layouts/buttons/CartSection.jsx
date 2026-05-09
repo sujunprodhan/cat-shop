@@ -2,6 +2,7 @@
 
 import CartPage from '@/components/cartpage/CartPage';
 import { useMemo, useState } from 'react';
+import { set } from 'react-hook-form';
 
 const CartSection = ({ cartItem = [] }) => {
   const [items, setItems] = useState(cartItem);
@@ -9,6 +10,13 @@ const CartSection = ({ cartItem = [] }) => {
 const removeItem =(id)=>{
 setItems(prevItems=>prevItems.filter((item)=>item._id !=id))
 }
+
+const updateQuantity = (id, newQty) => {
+  setItems((prevItems) =>
+    prevItems?.map((item) => (item._id === id ? { ...item, quantity: newQty } : item))
+  );
+};
+
 
   return (
     <div>
@@ -25,8 +33,11 @@ setItems(prevItems=>prevItems.filter((item)=>item._id !=id))
       </div>
       <div className="flex flex-col gap-10">
         {items?.map((item) => (
-          <CartPage key={item._id.toString()} item={item}
-          removeItem={removeItem}
+          <CartPage
+            key={item._id.toString()}
+            item={item}
+            removeItem={removeItem}
+            updateQuantity={updateQuantity}
           ></CartPage>
         ))}
       </div>
