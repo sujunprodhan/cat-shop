@@ -2,26 +2,24 @@
 
 import CartPage from '@/components/cartpage/CartPage';
 import { useMemo, useState } from 'react';
-import { set } from 'react-hook-form';
 
 const CartSection = ({ cartItem = [] }) => {
   const [items, setItems] = useState(cartItem);
   const totalItems = useMemo(() => items.reduce((acm, item) => acm + item.quantity, 0), [items]);
-const removeItem =(id)=>{
-setItems(prevItems=>prevItems.filter((item)=>item._id !=id))
-}
+  const removeItem = (id) => {
+    setItems((prevItems) => prevItems.filter((item) => item._id != id));
+  };
 
-const updateQuantity = (id, newQty) => {
-  setItems((prevItems) =>
-    prevItems?.map((item) => (item._id === id ? { ...item, quantity: newQty } : item))
-  );
-};
-
+  const updateQuantity = (id, newQty) => {
+    setItems((prevItems) =>
+      prevItems?.map((item) => (item._id === id ? { ...item, quantity: newQty } : item))
+    );
+  };
 
   return (
     <div>
       <div className="flex justify-between items-center mb-3">
-        <div>
+        <div className="border border-green-200 rounded-md px-4 py-2">
           <p className="text-xl font-semibold text-gray-500">
             <span className="text-green-600">({items.length})</span> Items Found in the cart
           </p>

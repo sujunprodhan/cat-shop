@@ -104,3 +104,37 @@ export const increaseItemDb = async (id, quantity) => {
     success: Boolean(result.modifiedCount),
   };
 };
+
+//Decrease function
+
+export const decreaseItemDb = async (id, quantity) => {
+  const { user } = (await getServerSession(authOptions)) || {};
+
+  if (!user) {
+    return { success: false };
+  }
+
+  // prevent going below 1
+  if (quantity <= 1) {
+    return {
+      success: false,
+      message: "Quantity can't be less than 1",
+    };
+  }
+
+  const updateData = {
+    $inc: {
+      quantity: -1,
+    },
+  };
+
+  const query = {
+    _id: new ObjectId(id),
+  };
+
+  const result = await cartCollection.updateOne(query, updateData);
+
+  return {
+    success: Boolean(result.modifiedCount),
+  };
+};

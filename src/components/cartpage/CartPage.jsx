@@ -2,13 +2,13 @@
 import React, { useState } from 'react';
 import { Minus, Plus, Trash2, ShoppingBag } from 'lucide-react';
 import Image from 'next/image';
-import { deleteItemCart, increaseItemDb } from '@/actions/server/cart';
+import { decreaseItemDb, deleteItemCart, increaseItemDb } from '@/actions/server/cart';
 import Swal from 'sweetalert2';
 
-const CartPage = ({ item, removeItem, updateQuantity }) => {
+const CartPage = ({ item, removeItem, updateQuantity,  }) => {
   const { title = 'Premium Product', quantity, image, price = 0, _id } = item || {};
 
-  // Increase data on DB Collection
+  // Increase quantity
   const increaseQty = async () => {
     const result = await increaseItemDb(_id, quantity + 1);
     console.log(result);
@@ -18,6 +18,19 @@ const CartPage = ({ item, removeItem, updateQuantity }) => {
       updateQuantity(_id, quantity + 1);
     }
   };
+
+  // Decrease quantity
+const decreaseQty = async () => {
+  if (quantity <= 1) return;
+
+  const result = await decreaseItemDb(_id, quantity);
+
+  if (result.success) {
+    Swal.fire('success', 'quantity decreased', 'success');
+    updateQuantity(_id, quantity - 1);
+  }
+};
+
 
   const handleRemove = async () => {
     Swal.fire({
@@ -53,7 +66,7 @@ const CartPage = ({ item, removeItem, updateQuantity }) => {
   return (
     <div>
       {/* Ultra Modern Single Line Item */}
-      <div className="group flex flex-row items-center gap-10 justify-between bg-white p-4 rounded-2xl shadow-sm border border-gray-400 hover:shadow-md hover:border-emerald-100 transition-all duration-300 ">
+      <div className="group flex flex-row items-center gap-10 justify-between bg-white p-4 rounded-2xl border border-green-100 shadow-md hover:shadow-md hover:border-emerald-100 transition-all duration-300 ">
         {/* Image Section with soft glow */}
         <div className="relative h-20 w-20 flex-shrink:0 overflow-hidden rounded-xl bg-slate-50">
           <Image
@@ -74,21 +87,25 @@ const CartPage = ({ item, removeItem, updateQuantity }) => {
         </div>
 
         {/* Quantity Controller - Professional Green Style */}
-        <div className="flex items-center gap-5  rounded-full px-3  border-green-100 border shadow-md">
+        <div className="flex items-center gap-2 px-3 border border-green-100 py-2 rounded-md shadow-md">
           <button
-            // onClick={decreaseQty}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-gray-600"
+            onClick={decreaseQty}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-gray-800"
           >
-            <Minus size={16} strokeWidth={1} className="text-gray-600" />
+            <Minus size={20} strokeWidth={1} className="border-green-100 border shadow-md " />
           </button>
 
           <span className="w-10 text-center font-bold text-lg text-green-600">{quantity}</span>
 
           <button
             onClick={increaseQty}
-            className="w-10 h-10 flex items-center gap-3 justify-center rounded-full bg-white text-gray-600  transition-all"
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-gray-800"
           >
-            <Plus size={16} strokeWidth={3} />
+            <Plus
+              size={20}
+              strokeWidth={1}
+              className='className=" border-green-100 border shadow-md'
+            />
           </button>
         </div>
 
