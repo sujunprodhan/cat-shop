@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { deleteItemCart } from '@/actions/server/cart';
 import Swal from 'sweetalert2';
 
-const CartPage = ({ item }) => {
+const CartPage = ({ item, removeItem }) => {
   // Destructuring with fallbacks
   const { title = 'Premium Product', image, price = 0, _id } = item || {};
   const [quantity, setQuantity] = useState(item?.quantity || 1);
@@ -23,14 +23,15 @@ const CartPage = ({ item }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const result = (await deleteItemCart(_id)) || {};
-        if(result.success){
-
+       
+        if (result.success) {
+           removeItem(_id);
           Swal.fire({
             title: 'Deleted!',
             text: 'Your file has been deleted.',
             icon: 'success',
           });
-        }else{
+        } else {
           Swal.fire({
             title: 'Opps!',
             text: 'Something is worng',
@@ -38,7 +39,6 @@ const CartPage = ({ item }) => {
           });
         }
       }
-
     });
   };
 
