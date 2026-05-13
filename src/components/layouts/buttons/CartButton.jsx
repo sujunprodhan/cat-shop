@@ -61,7 +61,7 @@ const CartButton = ({ product }) => {
       <button
         disabled={status === 'loading' || isLoading}
         onClick={addToCart}
-        className="w-full bg-white/90 backdrop-blur text-green-700 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold hover:bg-green-600 hover:text-white transition-all shadow-lg border border-green-100 disabled:opacity-70"
+        className="w-full bg-white/90 px-5 py-3 backdrop-blur text-green-700 flex items-center justify-center gap-2 rounded-xl font-semibold hover:bg-green-600 hover:text-white transition-all shadow-lg border border-green-100 disabled:opacity-70"
       >
         {isLoading ? (
           <>

@@ -66,7 +66,7 @@ const decreaseQty = async () => {
   return (
     <div>
       {/* Ultra Modern Single Line Item */}
-      <div className="group flex flex-row items-center gap-10 justify-between bg-white p-4 rounded-2xl border border-green-100 shadow-md hover:shadow-md hover:border-emerald-100 transition-all duration-300 ">
+      <div className="group flex flex-row items-center gap-10 justify-between bg-white p-4 rounded-2xl border border-green-600 shadow-md hover:shadow-md hover:border-emerald-100 transition-all duration-300 ">
         {/* Image Section with soft glow */}
         <div className="relative h-20 w-20 flex-shrink:0 overflow-hidden rounded-xl bg-slate-50">
           <Image
@@ -87,7 +87,7 @@ const decreaseQty = async () => {
         </div>
 
         {/* Quantity Controller - Professional Green Style */}
-        <div className="flex items-center gap-2 px-3 border border-green-100 py-2 rounded-md shadow-md">
+        <div className="flex items-center gap-2 px-3 border border-green-200 py-2 rounded-md shadow-md">
           <button
             onClick={decreaseQty}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-gray-800"

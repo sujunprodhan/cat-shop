@@ -1,23 +1,20 @@
-'use client'
+'use client';
 
-const OrderSummery = ({ totalItems, totalPrice }) => {
+import Image from 'next/image';
+
+const OrderSummery = ({ item }) => {
+  console.log(item, 'product item check');
+  const { title, image, price } = item;
+
   return (
     <div className="w-full lg:w-80 h-fit border border-green-200 rounded-xl p-5 shadow-sm bg-white sticky top-10">
-      <h2 className="text-xl font-bold mb-5 text-gray-700">Order Summary</h2>
-
-      <div className="flex justify-between mb-3">
-        <span>Total Items</span>
-        <span className="font-bold text-green-600">{totalItems}</span>
+      <div className="flex justify-between">
+        <Image src={image} alt="product image" width={50} height={50} className="rounded-md" />
+        <div className="flex flex-col justify-center items-end text-right">
+          <h1 className="font-semibold">{title}</h1>
+          <p className="text-green-600 font-bold">${price}</p>
+        </div>
       </div>
-
-      <div className="flex justify-between mb-5">
-        <span>Total Price</span>
-        <span className="font-bold text-green-600">${Number(totalPrice).toFixed(2)}</span>
-      </div>
-
-      <button className="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition">
-        Checkout
-      </button>
     </div>
   );
 };

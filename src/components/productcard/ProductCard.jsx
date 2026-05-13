@@ -16,7 +16,7 @@ const ProductCard = ({ product }) => {
           height={500}
           className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-700 ease-in-out"
         />
-        <button className="absolute top-4 right-4 bg-white p-2.5 rounded-full shadow-sm   hover:bg-green-50 hover:text-green-600  duration-300 z-10 text-gray-400">
+        <button>
           <Heart size={18} className="transition-colors" />
         </button>
         {/* Badge */}
@@ -34,7 +34,7 @@ const ProductCard = ({ product }) => {
         </div>
         {/* Quick View Overlay */}
         <div className="absolute inset-x-0 bottom-0 p-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-10">
-          <CartButton product={{...product, _id: _id.toString()}}></CartButton>
+          <CartButton product={{ ...product, _id: _id.toString() }}></CartButton>
         </div>
       </div>
       <div className="p-6 flex flex-col flex-grow:1">

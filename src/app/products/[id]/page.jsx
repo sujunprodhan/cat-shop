@@ -87,11 +87,8 @@ const ProductDetails = async ({ params }) => {
                 </div>
               </div>
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 mb-10">
+              <div>
                 <CartButton product={product}></CartButton>
-                <button className="flex-1 bg-white hover:bg-gray-50 text-black border border-green-600 px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all transform active:scale-95">
-                  Buy Now
-                </button>
               </div>
               {/* Trust Badges */}
               <div className="grid grid-cols-2 gap-4 pt-8 border-t border-gray-100">

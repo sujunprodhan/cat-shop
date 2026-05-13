@@ -1,6 +1,8 @@
 'use client';
 
 import CartPage from '@/components/cartpage/CartPage';
+import OrderSummery from '@/components/cartpage/OrderSummery';
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
 const CartSection = ({ cartItem = [] }) => {
@@ -26,7 +28,7 @@ const CartSection = ({ cartItem = [] }) => {
   return (
     <div className="grid grid-cols-2 gap-6">
       {/* LEFT SIDE - CART ITEMS */}
-      <div className="col-span-10">
+      <div className="gride-col-span-10">
         <div className="flex justify-between items-center mb-3">
           <div className="border border-green-200 rounded-md px-4 py-2">
             Items Found in the cart{' '}
@@ -60,41 +62,28 @@ const CartSection = ({ cartItem = [] }) => {
       </div>
 
       {/* RIGHT SIDE - ORDER SUMMARY */}
-      <div className="col-span-2">
-        <div className="sticky top-5 border border-gray-200 rounded-xl p-5 shadow-sm bg-white">
-          <h2 className="text-xl font-bold mb-4">Order Summary</h2>
-
-          <div className="space-y-3 text-gray-600">
-            <div className="flex justify-between">
-              {/* <span>Subtotal</span> */}
-              <span>${cartItem.title}</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span>Items</span>
-              <span>{totalItems}</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span>Shipping</span>
-              <span className="text-green-600">Free</span>
-            </div>
+      <div>
+        <div className="sticky top-3 border border-green-600 rounded-xl p-5 shadow-sm bg-white">
+          <div className="flex flex-col gap-3">
+            <h1 className="text-2xl font-bold text-green-700 mb-5">Order Summery</h1>
+            {cartItem?.map((item, index) => (
+              <OrderSummery key={index} item={item}></OrderSummery>
+            ))}
           </div>
 
-          <hr className="my-4" />
-
-          <div className="flex justify-between font-bold text-lg">
-            <span>Total</span>
-            <span>${totalPrice}</span>
+          <div className="flex justify-between font-bold text-lg border-t border-green-600 mt-5">
+            <span className="mt-5">Total</span>
+            <span className="mt-5">${totalPrice}</span>
           </div>
 
-          <button className="w-full mt-5 bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition">
-            Proceed to Checkout
-          </button>
-
-          <button className="w-full mt-3 border border-gray-300 py-3 rounded-lg font-semibold hover:bg-gray-50 transition">
-            Continue Shopping
-          </button>
+          <div className="flex flex-col gap-4">
+            <Link
+              href={'/checkoutpage'}
+              className="w-full mt-5 flex  bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold transition"
+            >
+              Proceed to Checkout
+            </Link>
+          </div>
         </div>
       </div>
     </div>
