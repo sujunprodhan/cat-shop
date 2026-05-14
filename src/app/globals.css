@@ -1,12 +1,18 @@
 @import 'tailwindcss';
+
 @plugin "daisyui" {
   themes: light --default;
 }
 @plugin "daisyui/theme" {
   name: "light";
   default: true;
-  --color-primary: blue;
-  --color-secondary: teal;
+  --color-primary: #10b981;
+  --color-secondary: #14b8a6;
+}
+
+body {
+  background: linear-gradient(135deg, #e3fdeb 0%, #ecfaf1 50%, #cdfcdb 100%);
+  background-attachment: fixed;
 }
 
 @custom-variant dark (&:where([data-theme=night], [data-theme=night] *));

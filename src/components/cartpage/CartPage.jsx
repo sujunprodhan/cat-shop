@@ -65,8 +65,7 @@ const decreaseQty = async () => {
 
   return (
     <div>
-      {/* Ultra Modern Single Line Item */}
-      <div className="group flex flex-row items-center gap-10 justify-between bg-white p-4 rounded-2xl border border-green-600 shadow-md hover:shadow-md hover:border-emerald-100 transition-all duration-300 ">
+      <div className=" container mx-auto group flex flex-row items-center gap-10 justify-between bg-white p-4 rounded-2xl border border-green-200 shadow-md hover:shadow-md hover:border-emerald-100 transition-all duration-300 ">
         {/* Image Section with soft glow */}
         <div className="relative h-20 w-20 flex-shrink:0 overflow-hidden rounded-xl bg-slate-50">
           <Image
@@ -120,20 +119,13 @@ const decreaseQty = async () => {
           </p>
         </div>
 
-        {/* Modern Remove Action */}
+        {/* Remove  */}
         <button
           onClick={handleRemove}
           className="p-3 rounded-xl text-red-600 hover:scale-105 transition-all duration-200"
         >
           <Trash2 size={22} strokeWidth={2} />
         </button>
-      </div>
-
-      {/* Decorative summary line for Ultra look */}
-      <div className="mt-6 flex justify-end">
-        <div className="h-1 w-24 bg-emerald-100 rounded-full">
-          
-        </div>
       </div>
     </div>
   );

@@ -5,16 +5,17 @@ export const Collection = {
   PRODUCTS: 'products',
   USERS: 'users',
   CART: 'cart',
+  ORDERS: 'orders',
 };
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 export const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
-});
+    serverApi: {
+      version: ServerApiVersion.v1,
+      strict: true,
+      deprecationErrors: true,
+    },
+  });
 
 //get a collection
 export const dbConnect = (cname) => {

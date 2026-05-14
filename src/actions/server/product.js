@@ -9,11 +9,14 @@ export const getProducts = async () => {
 };
 
 export const getSingleProduct = async (id) => {
-  if (id.length != 24) {
-    return {};
-  }
+   if (!ObjectId.isValid(id)) {
+     return null;
+   }
 
   const query = { _id: new ObjectId(id) };
   const product = await dbConnect(Collection.PRODUCTS).findOne(query);
+  if(!product){
+    return null
+  }
   return {...product, _id:product._id.toString()};
 };
