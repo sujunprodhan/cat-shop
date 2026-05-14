@@ -57,27 +57,29 @@ const CartButton = ({ product }) => {
   };
 
   return (
-    <div>
+    <div className="w-full">
       <button
         disabled={status === 'loading' || isLoading}
         onClick={addToCart}
-        className="w-full bg-white/90 px-5 py-3 backdrop-blur text-green-700 flex items-center justify-center gap-2 rounded-xl font-semibold hover:bg-green-600 hover:text-white transition-all shadow-lg border border-green-100 disabled:opacity-70"
+        className="w-full group relative bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-800 disabled:cursor-not-allowed text-white py-5 rounded-2xl font-black text-lg transition-all duration-300 shadow-xl shadow-emerald-950/20 active:scale-[0.98] flex items-center justify-center gap-3 overflow-hidden"
       >
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+        
         {isLoading ? (
-          <>
-            <Loader2 className="animate-spin" size={18} />
-            Adding...
-          </>
+          <div className="flex items-center gap-3">
+            <Loader2 className="animate-spin" size={20} />
+            <span className="uppercase tracking-widest text-sm">Processing...</span>
+          </div>
         ) : isSuccess ? (
-          <>
-            <Check size={18} />
-            Added
-          </>
+          <div className="flex items-center gap-3">
+            <Check size={20} className="text-white" />
+            <span className="uppercase tracking-widest text-sm">Added Successfully</span>
+          </div>
         ) : (
-          <>
-            <ShoppingCart size={18} />
-            Add To Cart
-          </>
+          <div className="flex items-center gap-3">
+            <ShoppingCart size={20} className="group-hover:scale-110 transition-transform" />
+            <span className="uppercase tracking-widest text-sm">Add To Cart</span>
+          </div>
         )}
       </button>
     </div>

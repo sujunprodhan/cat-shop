@@ -64,67 +64,61 @@ const decreaseQty = async () => {
   };
 
   return (
-    <div>
-      <div className=" container mx-auto group flex flex-row items-center gap-10 justify-between bg-white p-4 rounded-2xl border border-green-200 shadow-md hover:shadow-md hover:border-emerald-100 transition-all duration-300 ">
-        {/* Image Section with soft glow */}
-        <div className="relative h-20 w-20 flex-shrink:0 overflow-hidden rounded-xl bg-slate-50">
+    <div className="w-full">
+      <div className="group flex flex-col md:flex-row items-center gap-6 p-6 rounded-3xl bg-white/5 backdrop-blur-3xl border border-white/10 shadow-2xl hover:shadow-emerald-500/10 transition-all duration-500 hover:border-emerald-500/30">
+        {/* Image Section */}
+        <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-2xl bg-white/5 border border-white/5 p-2">
           <Image
             src={image}
-            alt="product image"
-            width={50}
-            height={50}
-            className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
+            alt={title}
+            width={100}
+            height={100}
+            className="h-full w-full object-contain group-hover:scale-110 transition-transform duration-700"
           />
         </div>
 
         {/* Title Section */}
-        <div className="flex-1 min-w-150px">
-          <h3 className="text-sm uppercase tracking-wider text-slate-400 font-bold mb-1">
-            Product
-          </h3>
-          <p className="font-semibold text-slate-800 text-lg leading-tight truncate">{title}</p>
+        <div className="flex-1 text-center md:text-left space-y-1">
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400">Premium Choice</p>
+          <h3 className="font-black text-white text-xl leading-tight line-clamp-1">{title}</h3>
+          <p className="text-slate-400 font-bold text-sm">Unit Price: <span className="text-white">${price}</span></p>
         </div>
 
-        {/* Quantity Controller - Professional Green Style */}
-        <div className="flex items-center gap-2 px-3 border border-green-200 py-2 rounded-md shadow-md">
+        {/* Quantity Controller */}
+        <div className="flex items-center gap-4 bg-slate-950/50 px-4 py-2 rounded-2xl border border-white/10 shadow-inner">
           <button
             onClick={decreaseQty}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-gray-800"
+            disabled={quantity <= 1}
+            className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-slate-400 hover:bg-emerald-500 hover:text-white disabled:opacity-30 transition-all active:scale-90"
           >
-            <Minus size={20} strokeWidth={1} className="border-green-100 border shadow-md " />
+            <Minus size={18} />
           </button>
 
-          <span className="w-10 text-center font-bold text-lg text-green-600">{quantity}</span>
+          <span className="w-8 text-center font-black text-xl text-white">{quantity}</span>
 
           <button
             onClick={increaseQty}
-            className="w-10 h-10 flex items-center justify-center rounded-full bg-white text-gray-800"
+            className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-slate-400 hover:bg-emerald-500 hover:text-white transition-all active:scale-90"
           >
-            <Plus
-              size={20}
-              strokeWidth={1}
-              className='className=" border-green-100 border shadow-md'
-            />
+            <Plus size={18} />
           </button>
         </div>
 
-        {/* Price Section */}
-        <div className="text-right min-w-100px">
-          <h3 className="text-sm font-extrabold uppercase tracking-wider text-green-600 mb-1">
-            Total
-          </h3>
-          <p className="text-xl font-black text-gray-600">
-            <span className="text-green-600 text-lg">$</span>
+        {/* Total Price Section */}
+        <div className="text-center md:text-right min-w-[120px] space-y-1">
+          <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Item Total</p>
+          <p className="text-2xl font-black text-emerald-400">
+            <span className="text-lg mr-0.5">$</span>
             {(price * quantity).toLocaleString()}
           </p>
         </div>
 
-        {/* Remove  */}
+        {/* Remove Button */}
         <button
           onClick={handleRemove}
-          className="p-3 rounded-xl text-red-600 hover:scale-105 transition-all duration-200"
+          className="p-4 rounded-2xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white transition-all duration-300 shadow-lg shadow-rose-950/20 active:scale-95"
         >
-          <Trash2 size={22} strokeWidth={2} />
+          <Trash2 size={20} />
         </button>
       </div>
     </div>
