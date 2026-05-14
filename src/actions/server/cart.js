@@ -6,7 +6,7 @@ import { ObjectId } from 'mongodb';
 import { getServerSession } from 'next-auth';
 import { cache } from 'react';
 
-const cartCollection = dbConnect(Collection.CART);
+// Removed top-level cartCollection call
 export const handleCart = async ({ product, inc }) => {
   const session = (await getServerSession(authOptions)) || {};
   const user = session?.user;
@@ -16,6 +16,7 @@ export const handleCart = async ({ product, inc }) => {
     };
 
   // Get cart Item > user.email && ProductId
+  const cartCollection = dbConnect(Collection.CART);
   const query = { email: user?.email, productId: product?._id };
   const isAdded = await cartCollection.findOne(query);
 
@@ -53,6 +54,7 @@ export const getCart = cache(async () => {
     return [];
   }
   const query = { email: user?.email };
+  const cartCollection = dbConnect(Collection.CART);
   const result = await cartCollection.find(query).toArray();
   return result;
 });
@@ -69,6 +71,7 @@ export const deleteItemCart = async (id) => {
     };
   }
   const query = { _id: new ObjectId(id) };
+  const cartCollection = dbConnect(Collection.CART);
   const result = await cartCollection.deleteOne(query);
 
   return {
@@ -99,6 +102,7 @@ export const increaseItemDb = async (id, quantity) => {
   const query = {
     _id: new ObjectId(id),
   };
+  const cartCollection = dbConnect(Collection.CART);
   const result = await cartCollection.updateOne(query, updateData);
   return {
     success: Boolean(result.modifiedCount),
@@ -131,7 +135,7 @@ export const decreaseItemDb = async (id, quantity) => {
   const query = {
     _id: new ObjectId(id),
   };
-
+  const cartCollection = dbConnect(Collection.CART);
   const result = await cartCollection.updateOne(query, updateData);
 
   return {

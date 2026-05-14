@@ -8,8 +8,10 @@ import AuthButton from './buttons/AuthButton';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { usePathname } from 'next/navigation';
+import { useCart } from '@/provider/CartProvider';
 
 const Navbar = () => {
+  const { cartCount } = useCart();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
@@ -75,7 +77,9 @@ const Navbar = () => {
 
             <Link href="/cart" className="p-2.5 rounded-full hover:bg-white/5 text-slate-300 hover:text-emerald-400 transition-all duration-300 relative group">
               <ShoppingCart size={20} />
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-slate-950">0</span>
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-slate-950">
+                {cartCount}
+              </span>
             </Link>
 
             <div className="ml-2">
@@ -88,7 +92,9 @@ const Navbar = () => {
         <div className="lg:hidden flex items-center gap-4">
           <Link href="/cart" className="p-2 text-slate-300 relative">
             <ShoppingCart size={22} />
-            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-emerald-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">0</span>
+            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-emerald-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+              {cartCount}
+            </span>
           </Link>
           <button
             onClick={() => setOpen(!open)}

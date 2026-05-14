@@ -1,23 +1,40 @@
 import HeroBanner from '@/components/layouts/HeroBanner';
 import Product from '@/components/Product';
 import ProductSkeleton from '@/components/skeletons/ProductSkeleton';
-import { authOptions } from '@/lib/authOptions';
-import { getServerSession } from 'next-auth';
+import Features from '@/components/home/Features';
+import Categories from '@/components/home/Categories';
+import PromoBanner from '@/components/home/PromoBanner';
 import { Suspense } from 'react';
 
-export default async function Home() {
+export default async function Home({ searchParams }) {
+  const { page } = (await searchParams) || {};
+
   return (
-    <div>
+    <div className="space-y-10 md:space-y-20 pb-20">
       <HeroBanner></HeroBanner>
-      <header className="space-y-20 md:w-11/12 mx-auto mt-20 mb-20 px-6">
+      
+      <Features />
+      
+      <Categories />
+      
+      <section className="max-w-7xl mx-auto px-6 space-y-16">
+        <div className="space-y-4">
+          <p className="text-emerald-400 font-black uppercase tracking-[0.4em] text-xs">Premium selection</p>
+          <h2 className="text-5xl lg:text-6xl font-black text-white tracking-tighter">
+            Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-400">Products</span>
+          </h2>
+        </div>
+
         <Suspense fallback={
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 md:gap-8">
             {[...Array(6)].map((_, i) => <ProductSkeleton key={i} />)}
           </div>
         }>
-          <Product></Product>
+          <Product page={page || 1}></Product>
         </Suspense>
-      </header>
+      </section>
+
+      <PromoBanner />
     </div>
   );
 }

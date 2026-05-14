@@ -6,8 +6,10 @@ import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Swal from 'sweetalert2';
+import { useCart } from '@/provider/CartProvider';
 
 const CartButton = ({ product }) => {
+  const { updateCartCount } = useCart();
   const { data: session, status } = useSession();
 
   const path = usePathname();
@@ -29,6 +31,7 @@ const CartButton = ({ product }) => {
 
       if (result.success) {
         setIsSuccess(true);
+        updateCartCount();
 
         setTimeout(async () => {
           await Swal.fire({

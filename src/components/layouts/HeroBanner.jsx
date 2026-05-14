@@ -8,7 +8,6 @@ import Link from 'next/link';
 const HeroBanner = () => {
   return (
     <div className="relative min-h-[95vh] flex items-center overflow-hidden bg-slate-950">
-      {/* Background Image with Parallax-like effect */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0 scale-105 opacity-60 grayscale hover:grayscale-0 transition-all duration-1000"
         style={{

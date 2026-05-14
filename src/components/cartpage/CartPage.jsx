@@ -4,17 +4,18 @@ import { Minus, Plus, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import { decreaseItemDb, deleteItemCart, increaseItemDb } from '@/actions/server/cart';
 import Swal from 'sweetalert2';
+import { useCart } from '@/provider/CartProvider';
 
 const CartPage = ({ item, removeItem, updateQuantity,  }) => {
+  const { updateCartCount } = useCart();
   const { title = 'Premium Product', quantity, image, price = 0, _id } = item || {};
 
   // Increase quantity
   const increaseQty = async () => {
     const result = await increaseItemDb(_id, quantity + 1);
-    console.log(result);
     
     if (result.success) {
-      Swal.fire('success', 'quantity added', 'success');
+      updateCartCount();
       updateQuantity(_id, quantity + 1);
     }
   };
@@ -26,7 +27,7 @@ const decreaseQty = async () => {
   const result = await decreaseItemDb(_id, quantity);
 
   if (result.success) {
-    Swal.fire('success', 'quantity decreased', 'success');
+    updateCartCount();
     updateQuantity(_id, quantity - 1);
   }
 };
@@ -46,6 +47,7 @@ const decreaseQty = async () => {
         const result = (await deleteItemCart(_id)) || {};
 
         if (result.success) {
+          updateCartCount();
           removeItem(_id);
           Swal.fire({
             title: 'Deleted!',

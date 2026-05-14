@@ -13,7 +13,7 @@ const AuthButton = () => {
       {session.status === 'authenticated' ? (
         <button
           onClick={() => signOut()}
-          className="group flex items-center gap-2 px-6 py-2.5 bg-slate-900 text-white rounded-xl font-bold hover:bg-emerald-600 transition-all duration-300 shadow-lg shadow-slate-200 hover:shadow-emerald-200 cursor-pointer active:scale-95"
+          className="group flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white rounded-xl font-bold hover:bg-emerald-600 transition-all duration-300 shadow-sm shadow-green-300 hover:shadow-emerald-200 cursor-pointer active:scale-95"
         >
           <LogOut size={18} className="group-hover:-translate-x-1 transition-transform" />
           <span>Logout</span>
@@ -22,14 +22,14 @@ const AuthButton = () => {
         <div className="flex items-center gap-3">
           <Link 
             href="/login" 
-            className="flex items-center gap-2 px-6 py-2.5 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-all duration-300 shadow-lg shadow-emerald-100 hover:shadow-emerald-200 active:scale-95"
+            className="flex items-center gap-2 px-6 py-2.5 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-all duration-300 shadow-lg active:scale-95"
           >
             <LogIn size={18} />
             <span >Login</span>
           </Link>
           <Link
             href="/register"
-            className="flex items-center gap-2 px-6 py-2.5 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-all duration-300 shadow-lg shadow-emerald-100 hover:shadow-emerald-200 active:scale-95"
+            className="flex items-center gap-2 px-6 py-2.5 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-all duration-300 shadow-lg active:scale-95"
           >
             <UserPlus size={18} />
             <span className="hidden xs:inline">Join Free</span>

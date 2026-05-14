@@ -8,12 +8,9 @@ import {
   Truck,
   User,
   MapPin,
-  Phone,
-  Mail,
-  ShoppingBag,
+  
   ArrowRight,
 } from 'lucide-react';
-import Image from 'next/image';
 import { createOrder } from '@/actions/server/order';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
@@ -90,24 +87,36 @@ const CheckOut = ({ cartItem = [], session }) => {
                 <User size={24} />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-white tracking-tight">Contact <span className="text-emerald-400">Information</span></h2>
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-1">Direct communication details</p>
+                <h2 className="text-2xl font-black text-white tracking-tight">
+                  Contact <span className="text-emerald-400">Information</span>
+                </h2>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-1">
+                  Direct communication details
+                </p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Full Name</label>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                  Full Name
+                </label>
                 <input
                   {...register('name', { required: 'Name is required' })}
                   className="w-full bg-white/5 border border-white/10 focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/5 rounded-2xl px-6 py-4 outline-none transition-all duration-300 text-white"
                   placeholder="John Doe"
                 />
-                {errors.name && <p className="text-rose-500 text-[10px] font-black mt-1 ml-1">{errors.name.message}</p>}
+                {errors.name && (
+                  <p className="text-rose-500 text-[10px] font-black mt-1 ml-1">
+                    {errors.name.message}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Email Address</label>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                  Email Address
+                </label>
                 <input
                   {...register('email', {
                     required: 'Email is required',
@@ -116,17 +125,27 @@ const CheckOut = ({ cartItem = [], session }) => {
                   className="w-full bg-white/5 border border-white/10 focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/5 rounded-2xl px-6 py-4 outline-none transition-all duration-300 text-white"
                   placeholder="john@example.com"
                 />
-                {errors.email && <p className="text-rose-500 text-[10px] font-black mt-1 ml-1">{errors.email.message}</p>}
+                {errors.email && (
+                  <p className="text-rose-500 text-[10px] font-black mt-1 ml-1">
+                    {errors.email.message}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Phone Number</label>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                  Phone Number
+                </label>
                 <input
                   {...register('phone', { required: 'Phone is required' })}
                   className="w-full bg-white/5 border border-white/10 focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/5 rounded-2xl px-6 py-4 outline-none transition-all duration-300 text-white"
                   placeholder="+1 234 567 890"
                 />
-                {errors.phone && <p className="text-rose-500 text-[10px] font-black mt-1 ml-1">{errors.phone.message}</p>}
+                {errors.phone && (
+                  <p className="text-rose-500 text-[10px] font-black mt-1 ml-1">
+                    {errors.phone.message}
+                  </p>
+                )}
               </div>
             </div>
           </section>
@@ -138,24 +157,36 @@ const CheckOut = ({ cartItem = [], session }) => {
                 <MapPin size={24} />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-white tracking-tight">Shipping <span className="text-blue-400">Address</span></h2>
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-1">Where should we send your cat magic?</p>
+                <h2 className="text-2xl font-black text-white tracking-tight">
+                  Shipping <span className="text-blue-400">Address</span>
+                </h2>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-1">
+                  Where should we send your cat magic?
+                </p>
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="md:col-span-2 space-y-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Street Address</label>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                  Street Address
+                </label>
                 <input
                   {...register('address', { required: 'Address is required' })}
                   className="w-full bg-white/5 border border-white/10 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 rounded-2xl px-6 py-4 outline-none transition-all duration-300 text-white"
                   placeholder="123 Luxury Avenue"
                 />
-                {errors.address && <p className="text-rose-500 text-[10px] font-black mt-1 ml-1">{errors.address.message}</p>}
+                {errors.address && (
+                  <p className="text-rose-500 text-[10px] font-black mt-1 ml-1">
+                    {errors.address.message}
+                  </p>
+                )}
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">City</label>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                  City
+                </label>
                 <input
                   {...register('city', { required: 'City is required' })}
                   className="w-full bg-white/5 border border-white/10 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 rounded-2xl px-6 py-4 outline-none transition-all duration-300 text-white"
@@ -164,7 +195,9 @@ const CheckOut = ({ cartItem = [], session }) => {
               </div>
 
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Postal Code</label>
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">
+                  Postal Code
+                </label>
                 <input
                   {...register('zip', { required: 'Zip code is required' })}
                   className="w-full bg-white/5 border border-white/10 focus:border-blue-500/50 focus:ring-4 focus:ring-blue-500/5 rounded-2xl px-6 py-4 outline-none transition-all duration-300 text-white"
@@ -181,8 +214,12 @@ const CheckOut = ({ cartItem = [], session }) => {
                 <CreditCard size={24} />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-white tracking-tight">Payment <span className="text-amber-400">Method</span></h2>
-                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-1">Select your preferred secure option</p>
+                <h2 className="text-2xl font-black text-white tracking-tight">
+                  Payment <span className="text-amber-400">Method</span>
+                </h2>
+                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-1">
+                  Select your preferred secure option
+                </p>
               </div>
             </div>
 
@@ -193,14 +230,18 @@ const CheckOut = ({ cartItem = [], session }) => {
                 </div>
                 <div>
                   <p className="font-black text-white text-lg">Cash on Delivery</p>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Pay at your doorstep</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-emerald-400">
+                    Pay at your doorstep
+                  </p>
                 </div>
               </div>
               <div className="border-2 border-white/5 bg-white/5 p-8 rounded-[2rem] cursor-not-allowed opacity-50 flex items-center gap-5">
                 <div className="w-6 h-6 rounded-full border-2 border-slate-600"></div>
                 <div>
                   <p className="font-black text-slate-400 text-lg">Card Payment</p>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-600">Coming soon</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-600">
+                    Coming soon
+                  </p>
                 </div>
               </div>
             </div>
@@ -231,14 +272,18 @@ const CheckOut = ({ cartItem = [], session }) => {
               ))}
               {cartItem.length === 0 && (
                 <div className="text-center py-12 bg-white/5 rounded-3xl border border-white/5 border-dashed">
-                  <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Selection is empty</p>
+                  <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">
+                    Selection is empty
+                  </p>
                 </div>
               )}
             </div>
 
             <div className="space-y-6 border-t border-white/5 pt-8 mt-2">
               <div className="flex justify-between items-center">
-                <span className="text-slate-500 font-black text-[10px] uppercase tracking-widest">Subtotal</span>
+                <span className="text-slate-500 font-black text-[10px] uppercase tracking-widest">
+                  Subtotal
+                </span>
                 <span className="text-white font-bold">${totalPrice.toLocaleString()}</span>
               </div>
               <div className="flex justify-between items-center">
@@ -250,7 +295,9 @@ const CheckOut = ({ cartItem = [], session }) => {
 
               <div className="flex justify-between items-end pt-6 border-t border-white/5">
                 <div className="space-y-1">
-                  <span className="text-emerald-400 font-black text-[10px] uppercase tracking-[0.2em]">Grand Total</span>
+                  <span className="text-emerald-400 font-black text-[10px] uppercase tracking-[0.2em]">
+                    Grand Total
+                  </span>
                   <p className="text-white font-black text-lg leading-none">Total Payable</p>
                 </div>
                 <span className="text-4xl font-black text-emerald-400 tracking-tighter">
