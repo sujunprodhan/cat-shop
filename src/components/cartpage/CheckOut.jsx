@@ -8,9 +8,17 @@ import { createOrder } from '@/actions/server/order';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
 import OrderSummery from './OrderSummery';
+import { useCart } from '@/provider/CartProvider';
+import StripeWrapper from './StripeWrapper';
+import { useState } from 'react';
 
 const CheckOut = ({ cartItem = [], session }) => {
   const router = useRouter();
+  const { updateCartCount } = useCart();
+  const [paymentMethod, setPaymentMethod] = useState('cod');
+  const [readyForPayment, setReadyForPayment] = useState(false);
+  const [formData, setFormData] = useState(null);
+
   const {
     register,
     handleSubmit,
@@ -27,16 +35,28 @@ const CheckOut = ({ cartItem = [], session }) => {
   const grandTotal = totalPrice + shippingFee;
 
   const onSubmit = async (data) => {
+    if (paymentMethod === 'card') {
+      setFormData(data);
+      setReadyForPayment(true);
+      return;
+    }
+    await processOrder(data, 'Cash on Delivery', null);
+  };
+
+  const processOrder = async (data, method, transactionId) => {
     try {
       const orderData = {
         ...data,
         items: cartItem,
         total: grandTotal,
+        paymentMethod: method,
+        transactionId: transactionId,
       };
 
       const result = await createOrder(orderData);
 
       if (result.success) {
+        updateCartCount();
         Swal.fire({
           title: 'Success!',
           text: 'Your order has been placed successfully.',
@@ -95,6 +115,7 @@ const CheckOut = ({ cartItem = [], session }) => {
                   Full Name
                 </label>
                 <input
+                  readOnly
                   {...register('name', { required: 'Name is required' })}
                   className="w-full bg-white/5 border border-white/10 focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/5 rounded-2xl px-6 py-4 outline-none transition-all duration-300 text-white"
                   placeholder="John Doe"
@@ -111,6 +132,7 @@ const CheckOut = ({ cartItem = [], session }) => {
                   Email Address
                 </label>
                 <input
+                  readOnly
                   {...register('email', {
                     required: 'Email is required',
                     pattern: { value: /^\S+@\S+$/i, message: 'Invalid email' },
@@ -217,23 +239,32 @@ const CheckOut = ({ cartItem = [], session }) => {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="border-2 border-emerald-500 bg-emerald-500/10 p-8 rounded-[2rem] cursor-pointer flex items-center gap-5 shadow-lg shadow-emerald-950/20 group/opt">
-                <div className="w-6 h-6 rounded-full border-4 border-emerald-500 flex items-center justify-center bg-emerald-500/20">
-                  <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+              <div 
+                onClick={() => setPaymentMethod('cod')}
+                className={`border-2 p-8 rounded-[2rem] cursor-pointer flex items-center gap-5 transition-all ${paymentMethod === 'cod' ? 'border-emerald-500 bg-emerald-500/10 shadow-lg shadow-emerald-950/20' : 'border-white/5 bg-white/5 hover:border-emerald-500/50'}`}
+              >
+                <div className={`w-6 h-6 rounded-full border-4 flex items-center justify-center transition-colors ${paymentMethod === 'cod' ? 'border-emerald-500 bg-emerald-500/20' : 'border-slate-600'}`}>
+                  {paymentMethod === 'cod' && <div className="w-2 h-2 rounded-full bg-emerald-500"></div>}
                 </div>
                 <div>
                   <p className="font-black text-white text-lg">Cash on Delivery</p>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-emerald-400">
+                  <p className={`text-[10px] font-black uppercase tracking-widest ${paymentMethod === 'cod' ? 'text-emerald-400' : 'text-slate-500'}`}>
                     Pay at your doorstep
                   </p>
                 </div>
               </div>
-              <div className="border-2 border-white/5 bg-white/5 p-8 rounded-[2rem] cursor-not-allowed opacity-50 flex items-center gap-5">
-                <div className="w-6 h-6 rounded-full border-2 border-slate-600"></div>
+
+              <div 
+                onClick={() => setPaymentMethod('card')}
+                className={`border-2 p-8 rounded-[2rem] cursor-pointer flex items-center gap-5 transition-all ${paymentMethod === 'card' ? 'border-blue-500 bg-blue-500/10 shadow-lg shadow-blue-950/20' : 'border-white/5 bg-white/5 hover:border-blue-500/50'}`}
+              >
+                <div className={`w-6 h-6 rounded-full border-4 flex items-center justify-center transition-colors ${paymentMethod === 'card' ? 'border-blue-500 bg-blue-500/20' : 'border-slate-600'}`}>
+                  {paymentMethod === 'card' && <div className="w-2 h-2 rounded-full bg-blue-500"></div>}
+                </div>
                 <div>
-                  <p className="font-black text-slate-400 text-lg">Card Payment</p>
-                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-600">
-                    Coming soon
+                  <p className="font-black text-white text-lg">Card Payment</p>
+                  <p className={`text-[10px] font-black uppercase tracking-widest ${paymentMethod === 'card' ? 'text-blue-400' : 'text-slate-500'}`}>
+                    Pay securely with Stripe
                   </p>
                 </div>
               </div>
@@ -299,26 +330,34 @@ const CheckOut = ({ cartItem = [], session }) => {
               </div>
             </div>
 
-            <button
-              onClick={handleSubmit(onSubmit)}
-              disabled={cartItem.length === 0 || isSubmitting}
-              className="mt-12 group relative overflow-hidden bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-800 disabled:cursor-not-allowed text-white py-6 rounded-2xl font-black text-lg transition-all duration-300 flex items-center justify-center w-full shadow-2xl shadow-emerald-950/40 active:scale-[0.98]"
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-              <span className="relative z-10 flex items-center gap-3 uppercase tracking-widest text-sm">
-                {isSubmitting ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    Processing Order...
-                  </>
-                ) : (
-                  <>
-                    Place Order Now
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" />
-                  </>
-                )}
-              </span>
-            </button>
+            {!readyForPayment ? (
+              <button
+                onClick={handleSubmit(onSubmit)}
+                disabled={cartItem.length === 0 || isSubmitting}
+                className={`mt-12 group relative overflow-hidden disabled:bg-slate-800 disabled:cursor-not-allowed text-white py-6 rounded-2xl font-black text-lg transition-all duration-300 flex items-center justify-center w-full shadow-2xl active:scale-[0.98] ${paymentMethod === 'card' ? 'bg-blue-600 hover:bg-blue-500 shadow-blue-950/40' : 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-950/40'}`}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                <span className="relative z-10 flex items-center gap-3 uppercase tracking-widest text-sm">
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      {paymentMethod === 'card' ? 'Continue to Payment' : 'Place Order Now'}
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1.5 transition-transform duration-300" />
+                    </>
+                  )}
+                </span>
+              </button>
+            ) : (
+              <StripeWrapper 
+                amount={grandTotal} 
+                onPaymentSuccess={(transactionId) => processOrder(formData, 'Card Payment', transactionId)} 
+                onCancel={() => setReadyForPayment(false)}
+              />
+            )}
 
             <p className="text-center text-slate-500 text-[10px] font-bold uppercase tracking-widest mt-8 px-4 leading-relaxed">
               Secure processing by <span className="text-emerald-500">CATSHOP PREMIUM</span>. <br />

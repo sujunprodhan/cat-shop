@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/authOptions';
 import { Collection, dbConnect } from '@/lib/dbConnect';
 import { sendEmail } from '@/lib/sendEmail';
 import { getServerSession } from 'next-auth';
+import { generateInvoiceHTML } from '@/lib/invoiceTemplate';
 
 const orderCollection = dbConnect(Collection.ORDERS);
 const cartCollection = dbConnect(Collection.CART);
@@ -39,12 +40,13 @@ export const createOrder = async (orderData) => {
 
     if (result.acknowledged) {
       // invoice template ekhane
-      const invoiceTemplate = `
-    <h2>Order Invoice</h2>
-    <p>Hello ${name}</p>
-    <p>${title}</p>
-    <p>Total: $${total}</p>
-  `;
+      const orderForInvoice = {
+        orderId: result.insertedId.toString(),
+        items,
+        total,
+        customerEmail: email,
+      };
+      const invoiceTemplate = generateInvoiceHTML(orderForInvoice);
 
       // email ekhane
       await sendEmail({

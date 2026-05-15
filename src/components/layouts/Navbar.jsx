@@ -77,9 +77,11 @@ const Navbar = () => {
 
             <Link href="/cart" className="p-2.5 rounded-full hover:bg-white/5 text-slate-300 hover:text-emerald-400 transition-all duration-300 relative group">
               <ShoppingCart size={20} />
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-slate-950">
-                {cartCount}
-              </span>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-slate-950">
+                  {cartCount}
+                </span>
+              )}
             </Link>
 
             <div className="ml-2">

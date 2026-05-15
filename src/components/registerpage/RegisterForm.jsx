@@ -16,6 +16,26 @@ export default function RegisterForm() {
   const router = useRouter();
   const callbackUrl = params.get('callbackUrl') || '/';
   const [showPassword, setShowPassword] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+
+  const uploadImageToImgbb = async (file) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    // Replace with your ImgBB API key in .env.local
+    const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY || '801df07212c14c5c7db6a2aee813d11b'; 
+    try {
+      const res = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.success) return data.data.url;
+    } catch (error) {
+      console.error('Image upload failed', error);
+    }
+    return null;
+  };
 
   const {
     register,
@@ -25,10 +45,16 @@ export default function RegisterForm() {
 
   const onSubmit = async (data) => {
     try {
+      let imageUrl = '';
+      if (imageFile) {
+        imageUrl = await uploadImageToImgbb(imageFile);
+      }
+
       const result = await postUser({
         name: data.name,
         email: data.email,
         password: data.password,
+        image: imageUrl,
       });
 
       if (result.acknowledged) {
@@ -215,6 +241,29 @@ export default function RegisterForm() {
                   </button>
                 </div>
                 {errors.password && <p className="text-rose-500 text-[10px] font-bold mt-1.5 ml-1 flex items-center gap-1 uppercase tracking-tighter transition-all animate-bounce">{errors.password.message}</p>}
+              </div>
+
+              {/* Image Field */}
+              <div className="space-y-2">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1 flex items-center gap-2">
+                  <User size={12} className="text-emerald-400" /> Profile Image (Optional)
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setImageFile(e.target.files[0]);
+                      setPreview(URL.createObjectURL(e.target.files[0]));
+                    }
+                  }}
+                  className="w-full bg-white/5 border border-white/10 focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/5 rounded-2xl px-6 py-3 outline-none transition-all duration-300 text-white placeholder:text-slate-700 font-medium file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-500/10 file:text-emerald-400 hover:file:bg-emerald-500/20"
+                />
+                {preview && (
+                  <div className="mt-2 ml-1">
+                    <img src={preview} alt="Preview" className="w-12 h-12 rounded-full object-cover border-2 border-emerald-500/50 shadow-lg" />
+                  </div>
+                )}
               </div>
 
               <button

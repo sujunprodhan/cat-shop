@@ -1,8 +1,17 @@
 import { getCart } from '@/actions/server/cart';
 import CartSection from '@/components/layouts/buttons/CartSection';
 import React from 'react';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/authOptions';
+import { redirect } from 'next/navigation';
 
 const CartItemPage = async () => {
+  const session = await getServerSession(authOptions);
+  
+  if (!session) {
+    redirect('/login?callbackUrl=/cart');
+  }
+
   const cartItem = await getCart();
   const formattedItems = cartItem?.map((item) => ({ ...item, _id: item._id.toString() }));
 

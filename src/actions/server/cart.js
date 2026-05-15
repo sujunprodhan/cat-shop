@@ -110,15 +110,12 @@ export const increaseItemDb = async (id, quantity) => {
 };
 
 //Decrease function
-
 export const decreaseItemDb = async (id, quantity) => {
   const { user } = (await getServerSession(authOptions)) || {};
 
   if (!user) {
     return { success: false };
   }
-
-  // prevent going below 1
   if (quantity <= 1) {
     return {
       success: false,
