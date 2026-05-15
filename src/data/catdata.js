@@ -1,4 +1,4 @@
-[
+export const productsData = [
   {
     title: 'Animal and Nature Learning Flash Cards',
     bangla: 'প্রাণী ও প্রকৃতি শেখার ফ্ল্যাশ কার্ড সেট',
