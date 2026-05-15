@@ -15,7 +15,7 @@ export const handleCart = async ({ product, inc }) => {
       success: false,
     };
 
-  // Get cart Item > user.email && ProductId
+  // Get cart Item 
   const cartCollection = dbConnect(Collection.CART);
   const query = { email: user?.email, productId: product?._id };
   const isAdded = await cartCollection.findOne(query);
@@ -30,7 +30,7 @@ export const handleCart = async ({ product, inc }) => {
     const result = await cartCollection.updateOne(query, updateData);
     return { success: Boolean(result.modifiedCount) };
   } else {
-    //Not Exist and Insert Cart
+    
     const newData = {
       productId: product?._id,
       email: user?.email,

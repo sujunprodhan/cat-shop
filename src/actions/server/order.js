@@ -2,6 +2,7 @@
 
 import { authOptions } from '@/lib/authOptions';
 import { Collection, dbConnect } from '@/lib/dbConnect';
+import { sendEmail } from '@/lib/sendEmail';
 import { getServerSession } from 'next-auth';
 
 const orderCollection = dbConnect(Collection.ORDERS);
@@ -37,11 +38,26 @@ export const createOrder = async (orderData) => {
     const result = await orderCollection.insertOne(newOrder);
 
     if (result.acknowledged) {
+      // invoice template ekhane
+      const invoiceTemplate = `
+    <h2>Order Invoice</h2>
+    <p>Hello ${name}</p>
+    <p>${title}</p>
+    <p>Total: $${total}</p>
+  `;
+
+      // email ekhane
+      await sendEmail({
+        to: email,
+        subject: 'Your Order Invoice - Cat Shop',
+        html: invoiceTemplate,
+      });
+
       await cartCollection.deleteMany({ email: session.user.email });
-      return { 
-        success: true, 
-        message: 'Order placed successfully!', 
-        orderId: result.insertedId.toString() 
+      return {
+        success: true,
+        message: 'Order placed successfully!',
+        orderId: result.insertedId.toString(),
       };
     }
 

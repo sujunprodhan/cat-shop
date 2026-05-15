@@ -20,7 +20,7 @@ export const getProducts = async (page = 1, limit = 6, search = '', sort = '') =
   } else if (sort === 'price_desc') {
     sortQuery = { price: -1 };
   } else {
-    sortQuery = { _id: -1 }; // Default sort (newest)
+    sortQuery = { _id: -1 };
   }
 
   const products = await collection.find(query).sort(sortQuery).skip(skip).limit(limit).toArray();

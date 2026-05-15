@@ -7,7 +7,7 @@ const Categories = () => {
     { name: 'Cat Food', icon: <Beef size={28} />, items: '120+ Products', color: 'bg-emerald-500' },
     { name: 'Accessories', icon: <ShoppingBag size={28} />, items: '85+ Products', color: 'bg-blue-500' },
     { name: 'Beds & Mats', icon: <Sofa size={28} />, items: '40+ Products', color: 'bg-indigo-500' },
-    { name: 'Interactive Toys', icon: <Ghost size={28} />, items: '60+ Products', color: 'bg-rose-500' },
+    { name: 'Interactive', icon: <Ghost size={28} />, items: '60+ Products', color: 'bg-rose-500' },
   ];
 
   return (

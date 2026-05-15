@@ -3,14 +3,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
-import {
-  CreditCard,
-  Truck,
-  User,
-  MapPin,
-  
-  ArrowRight,
-} from 'lucide-react';
+import { CreditCard, Truck, User, MapPin, ArrowRight } from 'lucide-react';
 import { createOrder } from '@/actions/server/order';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
