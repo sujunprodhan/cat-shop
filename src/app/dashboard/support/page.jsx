@@ -1,137 +1,260 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { 
-  LifeBuoy, 
-  MessageCircle, 
-  Phone, 
-  Mail, 
-  ArrowRight,
+import {
+  Send,
+  Cat,
   ShieldCheck,
-  Zap,
-  HelpCircle
+  Smile,
+  Paperclip,
+  CheckCheck,
+  LifeBuoy,
+  Sparkles
 } from 'lucide-react';
-import Link from 'next/link';
+import { getMessages, sendChatMessage } from '@/actions/server/chat';
+import { useSession } from 'next-auth/react';
+
+const SUPPORT_NAME = 'CatShop Support';
+const SUPPORT_AVATAR = null; // no image — use icon fallback
 
 const DashboardSupport = () => {
-  const supportChannels = [
-    {
-      title: 'WhatsApp Support',
-      description: 'Get instant answers for your questions via WhatsApp.',
-      icon: MessageCircle,
-      color: 'emerald',
-      link: 'https://wa.me/1234567890',
-      action: 'Start Chat'
-    },
-    {
-      title: 'Email Ticket',
-      description: 'Open a formal support ticket for complex issues.',
-      icon: Mail,
-      color: 'blue',
-      link: '/contact',
-      action: 'Open Ticket'
-    },
-    {
-      title: 'Phone Support',
-      description: 'Available Mon-Fri, 9am - 6pm for priority members.',
-      icon: Phone,
-      color: 'amber',
-      link: 'tel:+1234567890',
-      action: 'Call Now'
+  const { data: session } = useSession();
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
+  const [sending, setSending] = useState(false);
+  const scrollRef = useRef(null);
+
+  // Poll messages every 3s
+  useEffect(() => {
+    if (!session?.user?.email) return;
+    const load = async () => {
+      const data = await getMessages(session.user.email);
+      setMessages(data);
+    };
+    load();
+    const interval = setInterval(load, 3000);
+    return () => clearInterval(interval);
+  }, [session]);
+
+  // Auto-scroll to bottom on new messages
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  ];
+  }, [messages]);
+
+  const handleSend = async () => {
+    if (!input.trim() || sending) return;
+    setSending(true);
+    const tempContent = input;
+    setInput('');
+
+    // Optimistic UI update
+    const optimisticMsg = {
+      _id: `temp-${Date.now()}`,
+      senderEmail: session?.user?.email,
+      senderName: session?.user?.name,
+      senderImage: session?.user?.image,
+      content: tempContent,
+      createdAt: new Date().toISOString(),
+      status: 'sent',
+    };
+    setMessages(prev => [...prev, optimisticMsg]);
+
+    await sendChatMessage(tempContent);
+    setSending(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const userImage = session?.user?.image;
+  const userName = session?.user?.name || 'You';
 
   return (
-    <div className="max-w-6xl mx-auto space-y-12">
-      {/* Header Section */}
-      <div className="relative p-12 lg:p-16 rounded-[3rem] bg-white/5 border border-white/10 overflow-hidden group">
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-500/10 blur-[120px] rounded-full"></div>
-        
-        <div className="relative z-10 flex flex-col lg:flex-row items-center gap-12">
-          <div className="flex-1 space-y-6">
-            <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-full">
-              <LifeBuoy size={14} className="text-emerald-400" />
-              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400">Support Center</span>
-            </div>
-            <h1 className="text-4xl lg:text-6xl font-black text-white tracking-tight leading-[1.1]">
-              How can we <span className="text-emerald-500 text-shadow-emerald">help you</span> today?
-            </h1>
-            <p className="text-slate-400 font-medium text-lg leading-relaxed max-w-xl">
-              Welcome to the CatShop Priority Support Hub. Our team of feline experts is standing by to assist with any questions or order concerns.
-            </p>
+    <div className="max-w-4xl mx-auto h-[calc(100vh-160px)] flex flex-col">
+
+      {/* ── Top Header Bar ── */}
+      <div className="flex items-center gap-4 p-6 bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-t-[2.5rem] border-b border-white/5 flex-shrink-0">
+        {/* Support Avatar */}
+        <div className="relative">
+          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-xl shadow-emerald-500/20 border-2 border-emerald-500/30">
+            <Cat size={26} className="text-white" />
           </div>
-          <div className="w-full lg:w-72 aspect-square rounded-[2.5rem] bg-emerald-600 flex items-center justify-center relative shadow-2xl shadow-emerald-950/20 group-hover:scale-105 transition-transform duration-700">
-            <MessageCircle size={80} className="text-white animate-pulse" />
-            <div className="absolute inset-4 border-2 border-dashed border-white/20 rounded-[2rem]"></div>
+          <div className="absolute -bottom-0.5 -right-0.5 w-4 h-4 bg-emerald-500 border-2 border-slate-950 rounded-full shadow-lg shadow-emerald-500/30"></div>
+        </div>
+
+        {/* Support Info */}
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            <h2 className="text-white font-black text-lg tracking-tight">{SUPPORT_NAME}</h2>
+            <ShieldCheck size={16} className="text-emerald-400" />
           </div>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Active Now · Typically replies in minutes</span>
+          </div>
+        </div>
+
+        {/* Right badge */}
+        <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full">
+          <Sparkles size={14} className="text-emerald-400" />
+          <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Live Support</span>
         </div>
       </div>
 
-      {/* Support Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {supportChannels.map((channel, i) => (
+      {/* ── Messages Area ── */}
+      <div
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto px-6 py-8 space-y-6 custom-scrollbar bg-slate-950/40 backdrop-blur-md border-x border-white/5 relative"
+      >
+        {/* subtle bg texture */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+
+        {/* Welcome message if no messages yet */}
+        {messages.length === 0 && (
           <motion.div
-            key={i}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 hover:border-emerald-500/30 transition-all group flex flex-col h-full"
+            className="flex flex-col items-center justify-center py-16 space-y-6 relative z-10"
           >
-            <div className={`w-14 h-14 rounded-2xl bg-${channel.color}-500/10 flex items-center justify-center text-${channel.color}-400 mb-8 group-hover:scale-110 transition-transform`}>
-              <channel.icon size={28} />
+            <div className="w-24 h-24 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shadow-2xl shadow-emerald-500/10">
+              <LifeBuoy size={44} className="text-emerald-400" />
             </div>
-            <h3 className="text-2xl font-black text-white mb-3">{channel.title}</h3>
-            <p className="text-slate-500 font-medium text-sm mb-8 flex-1">{channel.description}</p>
-            <a 
-              href={channel.link}
-              className={`w-full py-4 rounded-xl bg-${channel.color}-600 hover:bg-${channel.color}-500 text-white font-black text-xs uppercase tracking-widest transition-all flex items-center justify-center gap-2`}
-            >
-              {channel.action}
-              <ArrowRight size={14} />
-            </a>
+            <div className="text-center space-y-2 max-w-sm">
+              <h3 className="text-xl font-black text-white tracking-tight">Start a Conversation</h3>
+              <p className="text-slate-500 text-sm font-medium leading-relaxed">
+                Send us a message and our support team will get back to you as soon as possible.
+              </p>
+            </div>
+            <div className="flex items-center gap-3 bg-white/5 border border-white/10 px-5 py-3 rounded-full text-sm text-slate-400 font-medium">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+              Team is online and ready to help
+            </div>
           </motion.div>
-        ))}
+        )}
+
+        {/* Message Bubbles */}
+        {messages.map((msg, i) => {
+          const isMe = msg.senderEmail === session?.user?.email;
+          // Use the image stored in the message itself for accuracy
+          const senderImg = msg.senderImage || null;
+          const senderInitial = (msg.senderName || 'U').charAt(0).toUpperCase();
+
+          return (
+            <motion.div
+              key={msg._id || i}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.2 }}
+              className={`flex items-end gap-2 relative z-10 ${isMe ? 'justify-end' : 'justify-start'}`}
+            >
+              {/* Left avatar — support agent (Cat icon) */}
+              {!isMe && (
+                <div className="flex-shrink-0 mb-1">
+                  <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center border-2 border-slate-900 shadow-lg">
+                    <Cat size={16} className="text-white" />
+                  </div>
+                </div>
+              )}
+
+              {/* Bubble */}
+              <div className={`flex flex-col ${isMe ? 'items-end' : 'items-start'} max-w-[70%]`}>
+                <div
+                  className={`px-5 py-3.5 text-sm font-medium leading-relaxed shadow-lg ${
+                    isMe
+                      ? 'bg-emerald-600 text-white rounded-[1.5rem] rounded-br-md shadow-emerald-950/30'
+                      : 'bg-white/5 border border-white/10 text-slate-200 rounded-[1.5rem] rounded-bl-md'
+                  }`}
+                >
+                  {msg.content}
+                </div>
+                <div className={`mt-1.5 flex items-center gap-1.5 px-1 ${isMe ? 'flex-row-reverse' : 'flex-row'}`}>
+                  <span className="text-[9px] text-slate-600 font-bold uppercase tracking-widest">
+                    {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                  {isMe && <CheckCheck size={11} className="text-emerald-500 opacity-60" />}
+                </div>
+              </div>
+
+              {/* Right avatar — the user's own profile image from the message */}
+              {isMe && (
+                <div className="flex-shrink-0 mb-1">
+                  {senderImg ? (
+                    <img
+                      src={senderImg}
+                      alt={msg.senderName || 'You'}
+                      referrerPolicy="no-referrer"
+                      className="w-9 h-9 rounded-full object-cover border-2 border-emerald-500/30 shadow-lg"
+                    />
+                  ) : (
+                    <div className="w-9 h-9 rounded-full bg-slate-700 flex items-center justify-center text-white font-black text-sm border-2 border-slate-600 shadow-lg">
+                      {senderInitial}
+                    </div>
+                  )}
+                </div>
+              )}
+            </motion.div>
+          );
+        })}
       </div>
 
-      {/* FAQ Suggestion */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="p-10 rounded-[2.5rem] bg-white/5 border border-white/10 flex items-center gap-8 group">
-          <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-all">
-            <HelpCircle size={32} />
-          </div>
-          <div className="flex-1">
-            <h4 className="text-xl font-black text-white mb-1">Help Center & FAQ</h4>
-            <p className="text-slate-500 text-sm font-medium">Browse our detailed guides and help articles.</p>
-          </div>
-          <ArrowRight size={20} className="text-slate-700 group-hover:text-white transition-colors" />
-        </div>
-
-        <div className="p-10 rounded-[2.5rem] bg-white/5 border border-white/10 flex items-center gap-8 group">
-          <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-all">
-            <Zap size={32} />
-          </div>
-          <div className="flex-1">
-            <h4 className="text-xl font-black text-white mb-1">Order Tracking</h4>
-            <p className="text-slate-500 text-sm font-medium">Check the live status of your feline deliveries.</p>
-          </div>
-          <ArrowRight size={20} className="text-slate-700 group-hover:text-white transition-colors" />
-        </div>
-      </div>
-
-      {/* Trust Footer */}
-      <div className="flex flex-col md:flex-row items-center justify-between p-12 rounded-[2.5rem] bg-emerald-600/10 border border-emerald-500/20 gap-8">
-        <div className="flex items-center gap-6 text-center md:text-left">
-          <ShieldCheck size={48} className="text-emerald-400" />
-          <div>
-            <h4 className="text-white font-black text-xl uppercase tracking-tighter">Secure Support Journey</h4>
-            <p className="text-emerald-400/70 text-sm font-medium">Your privacy and data security are our top priorities.</p>
-          </div>
-        </div>
+      {/* ── Input Bar ── */}
+      <div className="p-5 bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-b-[2.5rem] border-t border-white/5 flex-shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
-          <span className="text-xs font-black uppercase tracking-[0.2em] text-emerald-400">Live Status: Online</span>
+
+          {/* User avatar in input bar */}
+          <div className="flex-shrink-0">
+            {userImage ? (
+              <img
+                src={userImage}
+                alt={userName}
+                referrerPolicy="no-referrer"
+                className="w-10 h-10 rounded-full object-cover border-2 border-white/10 shadow-lg"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-white font-black text-sm border-2 border-slate-600">
+                {userName.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </div>
+
+          {/* Input wrapper */}
+          <div className="flex-1 flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-5 py-2.5 focus-within:border-emerald-500/40 transition-all">
+            <button className="text-slate-500 hover:text-emerald-400 transition-colors flex-shrink-0">
+              <Smile size={20} />
+            </button>
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Message Support..."
+              className="flex-1 bg-transparent border-none focus:ring-0 outline-none text-white text-sm py-1"
+            />
+            <button className="text-slate-500 hover:text-emerald-400 transition-colors flex-shrink-0">
+              <Paperclip size={18} />
+            </button>
+          </div>
+
+          {/* Send button */}
+          <button
+            onClick={handleSend}
+            disabled={!input.trim() || sending}
+            className="w-11 h-11 rounded-full bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-800 disabled:text-slate-600 text-white flex items-center justify-center flex-shrink-0 transition-all active:scale-90 shadow-lg shadow-emerald-600/20"
+          >
+            <Send size={18} className={sending ? 'animate-pulse' : ''} />
+          </button>
         </div>
+
+        <p className="text-center text-[9px] text-slate-700 font-bold uppercase tracking-[0.2em] mt-3 pointer-events-none">
+          End-to-end encrypted · CatShop Support
+        </p>
       </div>
     </div>
   );

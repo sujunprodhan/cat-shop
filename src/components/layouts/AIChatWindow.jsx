@@ -75,19 +75,21 @@ const AIChatWindow = ({ onClose }) => {
       initial={{ opacity: 0, scale: 0.9, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.9, y: 20 }}
-      className="flex flex-col h-[550px] w-full max-w-[400px] bg-slate-950 border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden"
+      className="flex flex-col h-[600px] w-full max-w-[420px] bg-slate-950/90 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] shadow-2xl overflow-hidden"
     >
       {/* Header */}
-      <div className="bg-gradient-to-r from-emerald-600 to-blue-600 p-6 flex items-center justify-between">
+      <div className="bg-slate-950/60 backdrop-blur-md p-6 flex items-center justify-between border-b border-white/5 relative z-10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center text-white">
-            <Cat size={20} />
+          <div className="relative">
+            <div className="w-11 h-11 bg-emerald-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-emerald-500/20 border-2 border-white/5">
+              <Cat size={22} />
+            </div>
+            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-slate-950 rounded-full shadow-lg"></div>
           </div>
           <div>
-            <h3 className="text-white font-black text-sm tracking-tight">CatShop AI</h3>
+            <h3 className="text-white font-black text-sm tracking-tight">CatShop {isHumanMode ? 'Agent' : 'AI'}</h3>
             <div className="flex items-center gap-1.5">
-              <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
-              <span className="text-[10px] font-bold text-emerald-100/70 uppercase tracking-widest">Always Online</span>
+              <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Active Now</span>
             </div>
           </div>
         </div>
@@ -98,68 +100,82 @@ const AIChatWindow = ({ onClose }) => {
                 setIsHumanMode(true);
                 setMessages([{ role: 'ai', content: "Connecting you to a human agent... please wait." }]);
               }}
-              className="px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-lg text-[10px] font-black uppercase tracking-widest text-white transition-all flex items-center gap-2 border border-white/10"
+              className="p-2.5 bg-white/5 hover:bg-white/10 rounded-full text-slate-300 transition-all border border-white/10"
+              title="Talk to Agent"
             >
-              <User size={12} />
-              Talk to Agent
+              <User size={18} />
             </button>
           )}
-          <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-lg text-white transition-colors">
+          <button onClick={onClose} className="p-2.5 bg-white/5 hover:bg-rose-500/20 hover:text-rose-400 rounded-full text-slate-300 transition-all border border-white/10">
             <X size={18} />
           </button>
         </div>
       </div>
 
       {/* Chat Area */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]">
-        {messages.map((msg, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, x: msg.role === 'ai' ? -10 : 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            className={`flex ${msg.role === 'ai' ? 'justify-start' : 'justify-end'}`}
-          >
-            <div className={`max-w-[80%] p-4 rounded-2xl text-sm font-medium leading-relaxed ${
-              msg.role === 'ai' 
-                ? 'bg-white/5 border border-white/10 text-slate-300 rounded-tl-none' 
-                : 'bg-emerald-600 text-white rounded-tr-none shadow-lg shadow-emerald-600/20'
-            }`}>
-              {msg.content}
-            </div>
-          </motion.div>
-        ))}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-5 custom-scrollbar relative">
+        <div className="absolute inset-0 opacity-5 pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+        {messages.map((msg, i) => {
+          const isAI = msg.role === 'ai';
+          return (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`flex ${isAI ? 'justify-start' : 'justify-end'} items-end gap-2`}
+            >
+              {isAI && (
+                <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-emerald-400 border border-white/5 flex-shrink-0 mb-1">
+                  <Cat size={14} />
+                </div>
+              )}
+              <div className={`max-w-[75%] p-4 rounded-[1.5rem] text-sm font-medium leading-relaxed ${
+                isAI 
+                  ? 'bg-white/5 border border-white/10 text-slate-200 rounded-bl-none' 
+                  : 'bg-emerald-600 text-white rounded-br-none shadow-lg shadow-emerald-600/20'
+              }`}>
+                {msg.content}
+              </div>
+            </motion.div>
+          );
+        })}
         {isTyping && (
-          <div className="flex justify-start">
-            <div className="bg-white/5 border border-white/10 p-4 rounded-2xl rounded-tl-none flex gap-1">
-              <div className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce"></div>
-              <div className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce delay-150"></div>
-              <div className="w-1.5 h-1.5 bg-slate-500 rounded-full animate-bounce delay-300"></div>
+          <div className="flex justify-start items-end gap-2">
+            <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-emerald-400 border border-white/5 flex-shrink-0">
+              <Cat size={14} />
+            </div>
+            <div className="bg-white/5 border border-white/10 p-4 rounded-[1.5rem] rounded-bl-none flex gap-1">
+              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce"></div>
+              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce delay-150"></div>
+              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-bounce delay-300"></div>
             </div>
           </div>
         )}
       </div>
 
       {/* Input Area */}
-      <div className="p-6 border-t border-white/5 bg-slate-900/50">
-        <div className="relative flex items-center gap-3">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-            placeholder="Ask me anything..."
-            className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm text-white outline-none focus:border-emerald-500/50 transition-all pr-14"
-          />
+      <div className="p-6 border-t border-white/5 bg-slate-950/60 backdrop-blur-md">
+        <div className="flex items-center gap-3">
+          <div className="flex-1 flex items-center bg-white/5 border border-white/10 rounded-full px-5 py-1 focus-within:border-emerald-500/40 transition-all">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+              placeholder="Aa"
+              className="w-full bg-transparent border-none focus:ring-0 text-white py-3 text-sm"
+            />
+          </div>
           <button
             onClick={handleSend}
             disabled={!input.trim() || isTyping}
-            className="absolute right-2 p-3 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-800 text-white rounded-xl transition-all active:scale-90"
+            className="w-11 h-11 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-800 text-white rounded-full transition-all active:scale-90 shadow-lg shadow-emerald-600/20 flex items-center justify-center flex-shrink-0"
           >
             <Send size={18} />
           </button>
         </div>
-        <p className="mt-4 text-[9px] text-center text-slate-600 font-bold uppercase tracking-[0.2em]">
-          Powered by CatShop Intelligence
+        <p className="mt-4 text-[9px] text-center text-slate-600 font-bold uppercase tracking-[0.2em] pointer-events-none">
+          Live Support Active
         </p>
       </div>
     </motion.div>

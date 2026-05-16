@@ -55,7 +55,6 @@ export const loginUser = async (payload) => {
     if (isMatched) {
       return user;
     }
-    
   } catch (error) {
     console.log(error, 'error message');
     return null;
@@ -64,7 +63,7 @@ export const loginUser = async (payload) => {
 
 export const updateUser = async (payload) => {
   const { email, name, image, password } = payload;
-  
+
   if (!email) return { success: false, error: 'User email is required' };
 
   try {
@@ -79,14 +78,11 @@ export const updateUser = async (payload) => {
       return { success: false, error: 'No data to update' };
     }
 
-    const result = await dbConnect(Collection.USERS).updateOne(
-      { email },
-      { $set: updateData }
-    );
+    const result = await dbConnect(Collection.USERS).updateOne({ email }, { $set: updateData });
 
-    return { 
-      success: result.acknowledged, 
-      modifiedCount: result.modifiedCount 
+    return {
+      success: result.acknowledged,
+      modifiedCount: result.modifiedCount,
     };
   } catch (error) {
     console.error('Update user error:', error);
