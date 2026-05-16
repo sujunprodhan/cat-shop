@@ -21,6 +21,7 @@ export const metadata = {
 
 import { CartProvider } from '@/provider/CartProvider';
 import { FavoriteProvider } from '@/provider/FavoriteProvider';
+import FloatingSupport from '@/components/layouts/FloatingSupport';
 
 export default function RootLayout({ children }) {
   return (
@@ -36,6 +37,7 @@ export default function RootLayout({ children }) {
               <footer className="md:w-11/12 mx-auto">
                 <Footer></Footer>
               </footer>
+              <FloatingSupport />
             </body>
           </html>
         </FavoriteProvider>

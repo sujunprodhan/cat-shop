@@ -16,7 +16,8 @@ import {
   ShoppingBag,
   Heart,
   Users,
-  ShieldAlert
+  ShieldAlert,
+  MessageSquare
 } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 
@@ -38,6 +39,7 @@ export default function DashboardLayout({ children }) {
   const adminNavItems = [
     { name: 'Manage Orders', href: '/admin/orders', icon: ShieldAlert },
     { name: 'Manage Users', href: '/admin/users', icon: Users },
+    { name: 'Customer Support', href: '/admin/support', icon: MessageSquare },
   ];
 
   const navItems = session?.role === 'admin' 

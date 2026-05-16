@@ -14,6 +14,7 @@ export const Collection = {
   ORDERS: 'orders',
   FAVORITES: 'favorites',
   CONTACTS: 'contacts',
+  CHATS: 'messages',
 };
 
 let client;

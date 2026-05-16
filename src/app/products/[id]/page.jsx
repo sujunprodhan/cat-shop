@@ -1,8 +1,9 @@
-import { getSingleProduct } from '@/actions/server/product';
+import { getRelatedProducts, getSingleProduct } from '@/actions/server/product';
 import CartButton from '@/components/layouts/buttons/CartButton';
+import ProductCard from '@/components/productcard/ProductCard';
 import ProductTabs from '@/components/producttab/ProductTabs';
 
-import { ArrowLeft, ShieldCheck, Star, Truck } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, Sparkles, Star, Truck } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
@@ -10,8 +11,20 @@ import React from 'react';
 const ProductDetails = async ({ params }) => {
   const { id } = await params;
   const product = await getSingleProduct(id);
-  const { image, title, price, discount, description, reviews, sold, ratings } = product;
   
+  if (!product) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <h2 className="text-4xl font-black text-white">Product Not Found</h2>
+          <Link href="/products" className="text-emerald-400 hover:underline">Back to Shop</Link>
+        </div>
+      </div>
+    );
+  }
+
+  const { image, title, price, discount, description, reviews, sold, ratings, category } = product;
+  const relatedProducts = await getRelatedProducts(id, category);
 
   return (
     <div className="min-h-screen relative py-12 px-4 sm:px-6 lg:px-8">
@@ -119,14 +132,44 @@ const ProductDetails = async ({ params }) => {
             </div>
           </div>
         </div>
-          <div className="max-w-7xl mx-auto mt-10">
-            <ProductTabs
-              productId={id}
-              description={description}
-              reviews={reviews}
-              ratings={ratings}
-            />
+
+        <div className="max-w-7xl mx-auto mt-10">
+          <ProductTabs
+            productId={id}
+            description={description}
+            reviews={reviews}
+            ratings={ratings}
+          />
+        </div>
+
+        {/* Related Products Section */}
+        {relatedProducts.length > 0 && (
+          <div className="mt-24 space-y-12">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-full">
+                  <Sparkles size={14} className="text-emerald-400" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400">Curated For You</span>
+                </div>
+                <h2 className="text-4xl font-black text-white tracking-tight">
+                  Related <span className="text-emerald-500">Products</span>
+                </h2>
+              </div>
+              <Link href="/products" className="text-slate-400 hover:text-white font-bold text-sm tracking-widest uppercase flex items-center gap-2 group">
+                View Collection 
+                <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-emerald-500 transition-all">
+                  →
+                </div>
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {relatedProducts.map((p) => (
+                <ProductCard key={p._id} product={p} />
+              ))}
+            </div>
           </div>
+        )}
       </div>
     </div>
   );

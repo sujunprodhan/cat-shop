@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb';
 import { authOptions } from '@/lib/authOptions';
 import { getServerSession } from 'next-auth';
 
-export const getProducts = async (page = 1, limit = 6, search = '', sort = '') => {
+export const getProducts = async (page = 1, limit = 6, search = '', sort = '', category = '') => {
   const skip = (page - 1) * limit;
   const collection = dbConnect(Collection.PRODUCTS);
   
@@ -13,6 +13,9 @@ export const getProducts = async (page = 1, limit = 6, search = '', sort = '') =
   const query = {};
   if (search) {
     query.title = { $regex: search, $options: 'i' };
+  }
+  if (category) {
+    query.category = category;
   }
 
   // Build sort
@@ -33,6 +36,17 @@ export const getProducts = async (page = 1, limit = 6, search = '', sort = '') =
     total,
     pages: Math.ceil(total / limit)
   };
+};
+
+export const getCategories = async () => {
+  try {
+    const collection = dbConnect(Collection.PRODUCTS);
+    const categories = await collection.distinct('category', { category: { $ne: null, $exists: true } });
+    return categories;
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    return [];
+  }
 };
 
 export const getSuggestions = async (query = '') => {
@@ -106,5 +120,36 @@ export const addProductReview = async (productId, reviewData) => {
   } catch (error) {
     console.error('Error adding review:', error);
     return { success: false, message: 'An internal error occurred' };
+  }
+};
+
+export const getRelatedProducts = async (productId, category = '') => {
+  try {
+    const collection = dbConnect(Collection.PRODUCTS);
+    
+    let query = { 
+      _id: { $ne: new ObjectId(productId) } 
+    };
+
+    if (category) {
+      query.category = category;
+    }
+
+    // Try to find products in same category first
+    let relatedProducts = await collection.find(query).limit(4).toArray();
+
+    // If not enough related products found, fill with others
+    if (relatedProducts.length < 4) {
+      const moreProducts = await collection
+        .find({ _id: { $ne: new ObjectId(productId), $nin: relatedProducts.map(p => p._id) } })
+        .limit(4 - relatedProducts.length)
+        .toArray();
+      relatedProducts = [...relatedProducts, ...moreProducts];
+    }
+
+    return JSON.parse(JSON.stringify(relatedProducts));
+  } catch (error) {
+    console.error('Error fetching related products:', error);
+    return [];
   }
 };
