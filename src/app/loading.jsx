@@ -6,7 +6,7 @@ import { Sparkles } from 'lucide-react';
 
 const Loading = () => {
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950">
+    <div className="fixed inset-0 z-100 flex items-center justify-center bg-slate-950">
       {/* Decorative Background Glows */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-emerald-500/10 blur-[120px] rounded-full animate-pulse"></div>
 
