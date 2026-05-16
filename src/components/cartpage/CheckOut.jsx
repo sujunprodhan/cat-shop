@@ -61,6 +61,8 @@ const CheckOut = ({ cartItem = [], session }) => {
           title: 'Success!',
           text: 'Your order has been placed successfully.',
           icon: 'success',
+          background: '#0f172a',
+          color: '#fff',
           confirmButtonColor: '#10b981',
         }).then(() => {
           router.push('/');
@@ -71,6 +73,8 @@ const CheckOut = ({ cartItem = [], session }) => {
           title: 'Error!',
           text: result.message || 'Something went wrong.',
           icon: 'error',
+          background: '#0f172a',
+          color: '#fff',
           confirmButtonColor: '#ef4444',
         });
       }
@@ -79,6 +83,9 @@ const CheckOut = ({ cartItem = [], session }) => {
         title: 'Error!',
         text: 'Failed to place order. Please try again.',
         icon: 'error',
+        background: '#0f172a',
+        color: '#fff',
+        confirmButtonColor: '#ef4444',
       });
     }
   };

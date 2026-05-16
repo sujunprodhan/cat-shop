@@ -36,29 +36,37 @@ const decreaseQty = async () => {
   const handleRemove = async () => {
     Swal.fire({
       title: 'Are you sure?',
-      text: "You won't be able to remove this!",
+      text: "Do you want to remove this item from your cart?",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#10b981',
+      cancelButtonColor: '#334155',
       confirmButtonText: 'Yes, remove it!',
+      background: '#0f172a',
+      color: '#fff',
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const result = (await deleteItemCart(_id)) || {};
+        const res = (await deleteItemCart(_id)) || {};
 
-        if (result.success) {
+        if (res.success) {
           updateCartCount();
           removeItem(_id);
           Swal.fire({
             title: 'Deleted!',
-            text: 'Your file has been deleted.',
+            text: 'Item has been removed from your cart.',
             icon: 'success',
+            background: '#0f172a',
+            color: '#fff',
+            confirmButtonColor: '#10b981'
           });
         } else {
           Swal.fire({
-            title: 'Opps!',
-            text: 'Something is worng',
-            icon: 'success',
+            title: 'Oops!',
+            text: 'Something went wrong while removing the item.',
+            icon: 'error',
+            background: '#0f172a',
+            color: '#fff',
+            confirmButtonColor: '#10b981'
           });
         }
       }

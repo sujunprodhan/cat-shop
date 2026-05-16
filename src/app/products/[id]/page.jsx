@@ -67,7 +67,7 @@ const ProductDetails = async ({ params }) => {
                   <div className="h-4 w-px bg-white/10"></div>
                   <div className="flex items-center gap-2">
                     <span className="text-slate-400 font-medium text-sm">
-                      <span className="text-white font-bold mr-1">{reviews || 0}</span> Reviews
+                      <span className="text-white font-bold mr-1">{Array.isArray(reviews) ? reviews.length : (reviews || 0)}</span> Reviews
                     </span>
                   </div>
                   <div className="h-4 w-px bg-white/10"></div>

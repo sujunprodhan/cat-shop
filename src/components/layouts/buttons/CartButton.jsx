@@ -40,6 +40,9 @@ const CartButton = ({ product }) => {
             text: `${product.title} added successfully`,
             timer: 1500,
             showConfirmButton: false,
+            background: '#0f172a',
+            color: '#fff',
+            iconColor: '#10b981',
           });
 
           setIsSuccess(false);
@@ -49,6 +52,9 @@ const CartButton = ({ product }) => {
           icon: 'error',
           title: 'Oops...',
           text: 'Something went wrong!',
+          background: '#0f172a',
+          color: '#fff',
+          confirmButtonColor: '#ef4444',
         });
       }
 

@@ -20,22 +20,25 @@ export const metadata = {
 };
 
 import { CartProvider } from '@/provider/CartProvider';
+import { FavoriteProvider } from '@/provider/FavoriteProvider';
 
 export default function RootLayout({ children }) {
   return (
     <NextAuthProvider>
       <CartProvider>
-        <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-          <body>
-            <header>
-              <Navbar></Navbar>
-            </header>
-            <main className="pt-24 min-h-screen">{children}</main>
-            <footer className="md:w-11/12 mx-auto">
-              <Footer></Footer>
-            </footer>
-          </body>
-        </html>
+        <FavoriteProvider>
+          <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+            <body>
+              <header>
+                <Navbar></Navbar>
+              </header>
+              <main className="pt-24 min-h-screen">{children}</main>
+              <footer className="md:w-11/12 mx-auto">
+                <Footer></Footer>
+              </footer>
+            </body>
+          </html>
+        </FavoriteProvider>
       </CartProvider>
     </NextAuthProvider>
   );

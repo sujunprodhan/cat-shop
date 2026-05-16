@@ -12,21 +12,37 @@ import {
   LogOut,
   Menu,
   X,
-  Sparkles
+  Sparkles,
+  ShoppingBag,
+  Heart,
+  Users,
+  ShieldAlert
 } from 'lucide-react';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 
 export default function DashboardLayout({ children }) {
+  const { data: session } = useSession();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const navItems = [
+  const baseNavItems = [
     { name: 'Dashboard', href: '/dashboard', icon: Home },
     { name: 'My Profile', href: '/dashboard/profile', icon: User },
+    { name: 'My Orders', href: '/dashboard/my-orders', icon: ShoppingBag },
+    { name: 'Favorites', href: '/dashboard/favorites', icon: Heart },
     { name: 'Billing', href: '/dashboard/billing', icon: CreditCard },
     { name: 'Support', href: '/dashboard/support', icon: HelpCircle },
     { name: 'Settings', href: '/dashboard/settings', icon: Settings },
   ];
+
+  const adminNavItems = [
+    { name: 'Manage Orders', href: '/admin/orders', icon: ShieldAlert },
+    { name: 'Manage Users', href: '/admin/users', icon: Users },
+  ];
+
+  const navItems = session?.role === 'admin' 
+    ? [...baseNavItems, ...adminNavItems] 
+    : baseNavItems;
 
   return (
     <div className="min-h-screen bg-slate-950 text-white flex overflow-hidden font-sans">

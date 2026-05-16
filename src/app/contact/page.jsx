@@ -14,28 +14,69 @@ import {
   CheckCircle2
 } from 'lucide-react';
 import Swal from 'sweetalert2';
+import { submitContactForm } from '@/actions/server/contact';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 const ContactPage = () => {
+  const { data: session, status } = useSession();
+  
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      name: session?.user?.name || '',
+      email: session?.user?.email || '',
+    }
+  });
+
+  // Update default values when session is loaded
+  React.useEffect(() => {
+    if (session?.user) {
+      reset({
+        name: session.user.name,
+        email: session.user.email,
+      });
+    }
+  }, [session, reset]);
 
   const onSubmit = async (data) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    await Swal.fire({
-      icon: 'success',
-      title: 'Message Sent!',
-      text: 'Thank you for reaching out. We will get back to you shortly.',
-      confirmButtonColor: '#10b981',
-      background: '#020617',
-      color: '#ffffff'
-    });
-    reset();
+    try {
+      const res = await submitContactForm(data);
+      
+      if (res.success) {
+        await Swal.fire({
+          icon: 'success',
+          title: 'Message Sent!',
+          text: res.message,
+          confirmButtonColor: '#10b981',
+          background: '#020617',
+          color: '#ffffff'
+        });
+        reset();
+      } else {
+        await Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: res.message,
+          confirmButtonColor: '#ef4444',
+          background: '#020617',
+          color: '#ffffff'
+        });
+      }
+    } catch (error) {
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'An unexpected error occurred. Please try again later.',
+        confirmButtonColor: '#ef4444',
+        background: '#020617',
+        color: '#ffffff'
+      });
+    }
   };
 
   const contactInfo = [
@@ -143,14 +184,32 @@ const ContactPage = () => {
                   <p className="text-slate-400 font-medium">Fill out the form and we'll be in touch shortly.</p>
                 </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <form onSubmit={handleSubmit(onSubmit)} className="relative space-y-6">
+                  {/* Authentication Overlay */}
+                  {status === 'unauthenticated' && (
+                    <div className="absolute inset-0 z-50 backdrop-blur-md bg-slate-950/60 rounded-3xl flex flex-col items-center justify-center p-6 text-center animate-in fade-in duration-500">
+                      <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mb-4 text-emerald-400">
+                        <Mail size={32} />
+                      </div>
+                      <h3 className="text-xl font-bold text-white mb-2">Sign In Required</h3>
+                      <p className="text-slate-400 text-sm mb-6 max-w-[250px]">Please log in to your account to send us a message.</p>
+                      <Link 
+                        href="/login?callbackUrl=/contact"
+                        className="px-8 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-emerald-600/20 active:scale-95"
+                      >
+                        LOGIN TO CONTACT
+                      </Link>
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Full Name</label>
                       <input 
                         {...register('name', { required: 'Name is required' })}
-                        placeholder="John Doe"
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/5 transition-all"
+                        placeholder="Your Name"
+                        readOnly
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-slate-400 cursor-not-allowed outline-none focus:border-white/20 transition-all opacity-80"
                       />
                       {errors.name && <p className="text-rose-500 text-[10px] font-black mt-1 ml-1">{errors.name.message}</p>}
                     </div>
@@ -161,8 +220,9 @@ const ContactPage = () => {
                           required: 'Email is required',
                           pattern: { value: /^\S+@\S+$/i, message: 'Invalid email' }
                         })}
-                        placeholder="name@example.com"
-                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white outline-none focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/5 transition-all"
+                        placeholder="your@email.com"
+                        readOnly
+                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-slate-400 cursor-not-allowed outline-none focus:border-white/20 transition-all opacity-80"
                       />
                       {errors.email && <p className="text-rose-500 text-[10px] font-black mt-1 ml-1">{errors.email.message}</p>}
                     </div>
@@ -194,8 +254,8 @@ const ContactPage = () => {
 
                   <button 
                     type="submit"
-                    disabled={isSubmitting}
-                    className="w-full group relative bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-800 text-white py-5 rounded-2xl font-black text-lg transition-all duration-300 shadow-2xl shadow-emerald-950/20 active:scale-[0.98] flex items-center justify-center gap-3 overflow-hidden"
+                    disabled={isSubmitting || status === 'unauthenticated'}
+                    className="w-full group relative bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-800/50 disabled:cursor-not-allowed text-white py-5 rounded-2xl font-black text-lg transition-all duration-300 shadow-2xl shadow-emerald-950/20 active:scale-[0.98] flex items-center justify-center gap-3 overflow-hidden"
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                     {isSubmitting ? (

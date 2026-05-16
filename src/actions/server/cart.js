@@ -49,14 +49,14 @@ export const handleCart = async ({ product, inc }) => {
 };
 
 export const getCart = cache(async () => {
-  const user = await getServerSession(authOptions);
-  if (!user) {
+  const session = await getServerSession(authOptions);
+  if (!session || !session.user) {
     return [];
   }
-  const query = { email: user?.email };
+  const query = { email: session.user.email };
   const cartCollection = dbConnect(Collection.CART);
   const result = await cartCollection.find(query).toArray();
-  return result;
+  return JSON.parse(JSON.stringify(result));
 });
 
 export const deleteItemCart = async (id) => {

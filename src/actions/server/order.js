@@ -9,6 +9,7 @@ import { ObjectId } from 'mongodb';
 
 const orderCollection = dbConnect(Collection.ORDERS);
 const cartCollection = dbConnect(Collection.CART);
+const productCollection = dbConnect(Collection.PRODUCTS);
 
 export const createOrder = async (orderData) => {
   try {
@@ -40,6 +41,16 @@ export const createOrder = async (orderData) => {
     const result = await orderCollection.insertOne(newOrder);
 
     if (result.acknowledged) {
+      // Increment sold count for each item
+      for (const item of items) {
+        if (item.productId) {
+          await productCollection.updateOne(
+            { _id: new ObjectId(item.productId) },
+            { $inc: { sold: item.quantity || 1 } }
+          );
+        }
+      }
+
       // invoice template ekhane
       const orderForInvoice = {
         orderId: result.insertedId.toString(),
@@ -68,6 +79,28 @@ export const createOrder = async (orderData) => {
   } catch (error) {
     console.error('Error creating order:', error);
     return { success: false, message: 'An internal error occurred' };
+  }
+};
+
+export const getUserOrders = async () => {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return { success: false, message: 'Unauthorized' };
+    }
+
+    const orders = await orderCollection
+      .find({ userEmail: session.user.email })
+      .sort({ createdAt: -1 })
+      .toArray();
+
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(orders)),
+    };
+  } catch (error) {
+    console.error('Error fetching user orders:', error);
+    return { success: false, message: 'Failed to fetch orders' };
   }
 };
 

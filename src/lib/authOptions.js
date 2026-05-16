@@ -57,20 +57,12 @@ export const authOptions = {
       }
       return session;
     },
-    async jwt({ token, user, account }) {
-      console.log('account data in token', account);
-
-      if (user) {
-        if (account.provider == 'google') {
-          const dbUser = await dbConnect(Collection.USERS).findOne({
-            email: user.email,
-          });
-          token.role = dbUser?.role || 'user';
-          token.email = dbUser?.email;
-        } else {
-          token.role = user?.role;
-          token.email = user?.email;
-        }
+    async jwt({ token, user }) {
+      if (token?.email) {
+        const dbUser = await dbConnect(Collection.USERS).findOne({
+          email: token.email,
+        });
+        token.role = dbUser?.role || 'user';
       }
       return token;
     },

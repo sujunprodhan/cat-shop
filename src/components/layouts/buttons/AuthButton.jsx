@@ -3,7 +3,7 @@
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import React, { useState, useRef, useEffect } from 'react';
-import { LogOut, UserPlus, LogIn, LayoutDashboard, ShoppingBag, User, ShieldAlert } from 'lucide-react';
+import { LogOut, UserPlus, LogIn, LayoutDashboard, ShoppingBag, User, ShieldAlert, Users } from 'lucide-react';
 
 const AuthButton = () => {
   const { data: session, status } = useSession();
@@ -63,14 +63,24 @@ const AuthButton = () => {
                 </Link>
 
                 {session?.role === 'admin' && (
-                  <Link
-                    href="/admin/orders"
-                    onClick={() => setIsOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 text-sm text-slate-300 hover:bg-rose-500/10 hover:text-rose-400 rounded-xl transition-colors font-medium"
-                  >
-                    <ShieldAlert size={18} />
-                    Admin Panel
-                  </Link>
+                  <>
+                    <Link
+                      href="/admin/orders"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2.5 text-sm text-slate-300 hover:bg-rose-500/10 hover:text-rose-400 rounded-xl transition-colors font-medium"
+                    >
+                      <ShoppingBag size={18} />
+                      Manage Orders
+                    </Link>
+                    <Link
+                      href="/admin/users"
+                      onClick={() => setIsOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2.5 text-sm text-slate-300 hover:bg-rose-500/10 hover:text-rose-400 rounded-xl transition-colors font-medium"
+                    >
+                      <Users size={18} />
+                      Manage Users
+                    </Link>
+                  </>
                 )}
                 
                 <Link

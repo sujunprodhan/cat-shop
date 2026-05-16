@@ -9,9 +9,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { usePathname } from 'next/navigation';
 import { useCart } from '@/provider/CartProvider';
+import { useFavorites } from '@/provider/FavoriteProvider';
 
 const Navbar = () => {
   const { cartCount } = useCart();
+  const { favoriteCount } = useFavorites();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
@@ -84,6 +86,15 @@ const Navbar = () => {
               )}
             </Link>
 
+            <Link href="/dashboard/favorites" className="p-2.5 rounded-full hover:bg-white/5 text-slate-300 hover:text-rose-400 transition-all duration-300 relative group">
+              <Heart size={20} />
+              {favoriteCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-slate-950">
+                  {favoriteCount}
+                </span>
+              )}
+            </Link>
+
             <div className="ml-2">
               <AuthButton />
             </div>
@@ -92,6 +103,14 @@ const Navbar = () => {
 
         {/* Mobile Menu Button */}
         <div className="lg:hidden flex items-center gap-4">
+          <Link href="/dashboard/favorites" className="p-2 text-slate-300 relative">
+            <Heart size={22} />
+            {favoriteCount > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                {favoriteCount}
+              </span>
+            )}
+          </Link>
           <Link href="/cart" className="p-2 text-slate-300 relative">
             <ShoppingCart size={22} />
             <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-emerald-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
