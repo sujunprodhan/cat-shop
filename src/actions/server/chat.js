@@ -13,6 +13,11 @@ export const sendChatMessage = async (
     const session = await getServerSession(authOptions);
     if (!session || !session.user) return { success: false, message: 'Unauthorized' };
 
+    // Prevent Admin from sending a message to 'admin' (i.e. pretending to be a user sending to support)
+    if (session.role === 'admin' && receiverEmail === 'admin') {
+      return { success: false, message: 'Admins cannot send messages to the user support channel.' };
+    }
+
     const chatCollection = dbConnect(Collection.CHATS);
 
     const message = {
@@ -64,21 +69,12 @@ export const getAllConversations = async () => {
 
     const chatCollection = dbConnect(Collection.CHATS);
 
-    /*
-      Sort ASCENDING first so that $first always picks the OLDEST message.
-      The oldest message in any conversation is always from the USER (not admin),
-      so senderName / senderImage will correctly show the user's profile.
-      $last picks the MOST RECENT message for the preview & timestamp.
-    */
     const conversations = await chatCollection.aggregate([
+      { $match: { chatId: { $exists: true, $ne: null } } },
       { $sort: { createdAt: 1 } },
       {
         $group: {
           _id: '$chatId',
-          // Oldest message is always from the user → user's profile info
-          senderName: { $first: '$senderName' },
-          senderImage: { $first: '$senderImage' },
-          senderEmail: { $first: '$senderEmail' },
           // Most recent message for preview
           lastMessage: { $last: '$content' },
           lastActiveAt: { $last: '$createdAt' },
@@ -86,6 +82,31 @@ export const getAllConversations = async () => {
             $sum: { $cond: [{ $eq: ['$status', 'unread'] }, 1, 0] },
           },
         },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: '_id',
+          foreignField: 'email',
+          as: 'userInfo'
+        }
+      },
+      {
+        $unwind: {
+          path: '$userInfo',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          lastMessage: 1,
+          lastActiveAt: 1,
+          unreadCount: 1,
+          senderName: { $ifNull: ['$userInfo.name', '$_id'] },
+          senderEmail: '$_id',
+          senderImage: '$userInfo.image'
+        }
       },
       { $sort: { lastActiveAt: -1 } }, // newest conversation on top
     ]).toArray();

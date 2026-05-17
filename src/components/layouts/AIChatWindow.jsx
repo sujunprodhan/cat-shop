@@ -94,7 +94,7 @@ const AIChatWindow = ({ onClose }) => {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {!isHumanMode && (
+          {!isHumanMode && session?.role !== 'admin' && (
             <button 
               onClick={() => {
                 setIsHumanMode(true);

@@ -53,16 +53,18 @@ const DashboardSupport = () => {
   const timeLbl = isDark ? 'text-slate-600' : 'text-slate-400';
   const avatarFallback = isDark ? 'bg-slate-700 border-slate-600 text-white' : 'bg-slate-200 border-slate-300 text-slate-700';
 
+  const userEmail = session?.user?.email;
+
   useEffect(() => {
-    if (!session?.user?.email) return;
+    if (!userEmail) return;
     const load = async () => {
-      const data = await getMessages(session.user.email);
+      const data = await getMessages(userEmail);
       setMessages(data);
     };
     load();
     const interval = setInterval(load, 3000);
     return () => clearInterval(interval);
-  }, [session]);
+  }, [userEmail]);
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -169,6 +171,22 @@ const DashboardSupport = () => {
       <div className="max-w-4xl mx-auto h-[calc(100vh-160px)] flex items-center justify-center">
         <div className="text-center space-y-4">
           <p className={`font-black text-xl ${welcomeH}`}>Please log in to access support.</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (session?.role === 'admin') {
+    return (
+      <div className="max-w-4xl mx-auto h-[calc(100vh-160px)] flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="w-16 h-16 bg-rose-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-rose-500/20">
+            <ShieldCheck size={32} className="text-rose-500" />
+          </div>
+          <p className={`font-black text-xl ${welcomeH}`}>Admins Cannot Use User Support</p>
+          <p className={`text-sm max-w-sm mx-auto leading-relaxed ${welcomeP}`}>
+            You are logged in as an administrator. Please navigate to the Admin Dashboard to read and reply to customer messages.
+          </p>
         </div>
       </div>
     );

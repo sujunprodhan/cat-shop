@@ -4,6 +4,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements, PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { Loader2, ArrowRight } from 'lucide-react';
 import Swal from 'sweetalert2';
+import { useTheme } from '@/provider/ThemeProvider';
 
 const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
   ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) 
@@ -14,6 +15,12 @@ const CheckoutForm = ({ amount, onPaymentSuccess, onCancel }) => {
   const elements = useElements();
   const [error, setError] = useState(null);
   const [processing, setProcessing] = useState(false);
+  
+  const { theme } = useTheme();
+  const isDark = theme === 'night';
+  
+  const inputBg = isDark ? 'bg-white/5 border-white/10' : 'bg-slate-50 border-slate-200';
+  const btnCancel = isDark ? 'bg-white/5 hover:bg-white/10 text-white border-white/10' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200';
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -39,7 +46,7 @@ const CheckoutForm = ({ amount, onPaymentSuccess, onCancel }) => {
 
   return (
     <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-      <div className="w-full bg-white/5 border border-white/10 rounded-2xl p-6 transition-all duration-300">
+      <div className={`w-full rounded-2xl p-6 transition-all duration-300 border ${inputBg}`}>
         <PaymentElement 
           options={{
             layout: 'tabs',
@@ -53,7 +60,7 @@ const CheckoutForm = ({ amount, onPaymentSuccess, onCancel }) => {
           type="button"
           onClick={onCancel}
           disabled={processing}
-          className="w-1/3 bg-white/5 hover:bg-white/10 text-white font-bold py-4 rounded-xl transition-all border border-white/10"
+          className={`w-1/3 font-bold py-4 rounded-xl transition-all border ${btnCancel}`}
         >
           Cancel
         </button>
@@ -84,6 +91,13 @@ const CheckoutForm = ({ amount, onPaymentSuccess, onCancel }) => {
 
 export default function StripeWrapper({ amount, onPaymentSuccess, onCancel }) {
   const [clientSecret, setClientSecret] = useState('');
+  const { theme } = useTheme();
+  const isDark = theme === 'night';
+
+  const headingText = isDark ? 'text-white' : 'text-slate-900';
+  const mutedText = isDark ? 'text-slate-400' : 'text-slate-500';
+  const borderBot = isDark ? 'border-white/5' : 'border-slate-200';
+  const inputBg = isDark ? 'bg-white/5' : 'bg-slate-50';
 
   useEffect(() => {
     fetch('/api/create-payment-intent', {
@@ -105,7 +119,7 @@ export default function StripeWrapper({ amount, onPaymentSuccess, onCancel }) {
 
   if (!clientSecret) {
     return (
-      <div className="mt-8 py-10 flex flex-col items-center justify-center text-slate-400 gap-3 border border-white/5 rounded-2xl bg-white/5">
+      <div className={`mt-8 py-10 flex flex-col items-center justify-center gap-3 border rounded-2xl ${isDark ? 'border-white/5 bg-white/5 text-slate-400' : 'border-slate-200 bg-slate-50 text-slate-500'}`}>
         <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
         <p className="text-xs font-bold uppercase tracking-widest">Initializing Payment...</p>
       </div>
@@ -113,27 +127,27 @@ export default function StripeWrapper({ amount, onPaymentSuccess, onCancel }) {
   }
 
   return (
-    <div className="pt-6 border-t border-white/5">
-      <h3 className="text-slate-500 font-black text-[10px] uppercase tracking-widest mb-4">Complete Your Payment</h3>
+    <div className={`pt-6 border-t ${borderBot}`}>
+      <h3 className={`font-black text-[10px] uppercase tracking-widest mb-4 ${mutedText}`}>Complete Your Payment</h3>
       <Elements 
         stripe={stripePromise} 
         options={{ 
           clientSecret,
           appearance: {
-            theme: 'night',
+            theme: isDark ? 'night' : 'stripe',
             variables: {
               colorPrimary: '#3b82f6',
               colorBackground: 'transparent',
-              colorText: '#ffffff',
+              colorText: isDark ? '#ffffff' : '#0f172a',
               colorDanger: '#ef4444',
               fontFamily: 'Inter, sans-serif',
               borderRadius: '8px',
             },
             rules: {
               '.Input': {
-                backgroundColor: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                color: '#ffffff',
+                backgroundColor: isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(248, 250, 252, 1)',
+                border: isDark ? '1px solid rgba(255, 255, 255, 0.1)' : '1px solid rgba(226, 232, 240, 1)',
+                color: isDark ? '#ffffff' : '#0f172a',
               },
               '.Input:focus': {
                 border: '1px solid rgba(59, 130, 246, 0.5)',

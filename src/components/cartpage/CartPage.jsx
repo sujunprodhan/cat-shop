@@ -5,10 +5,21 @@ import Image from 'next/image';
 import { decreaseItemDb, deleteItemCart, increaseItemDb } from '@/actions/server/cart';
 import Swal from 'sweetalert2';
 import { useCart } from '@/provider/CartProvider';
+import { useTheme } from '@/provider/ThemeProvider';
 
 const CartPage = ({ item, removeItem, updateQuantity,  }) => {
   const { updateCartCount } = useCart();
   const { title = 'Premium Product', quantity, image, price = 0, _id } = item || {};
+  const { theme } = useTheme();
+  const isDark = theme === 'night';
+
+  /* Theme Tokens */
+  const cardBg = isDark ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200';
+  const headingText = isDark ? 'text-white' : 'text-slate-900';
+  const mutedText = isDark ? 'text-slate-400' : 'text-slate-500';
+  const imgBg = isDark ? 'bg-white/5 border-white/5' : 'bg-slate-50 border-slate-200';
+  const ctrlBg = isDark ? 'bg-slate-950/50 border-white/10' : 'bg-slate-50 border-slate-200';
+  const btnBg = isDark ? 'bg-white/5 text-slate-400' : 'bg-white text-slate-500 shadow-sm border border-slate-200';
 
   // Increase quantity
   const increaseQty = async () => {
@@ -42,8 +53,8 @@ const decreaseQty = async () => {
       confirmButtonColor: '#10b981',
       cancelButtonColor: '#334155',
       confirmButtonText: 'Yes, remove it!',
-      background: '#0f172a',
-      color: '#fff',
+      background: isDark ? '#0f172a' : '#ffffff',
+      color: isDark ? '#fff' : '#0f172a',
     }).then(async (result) => {
       if (result.isConfirmed) {
         const res = (await deleteItemCart(_id)) || {};
@@ -55,8 +66,8 @@ const decreaseQty = async () => {
             title: 'Deleted!',
             text: 'Item has been removed from your cart.',
             icon: 'success',
-            background: '#0f172a',
-            color: '#fff',
+            background: isDark ? '#0f172a' : '#ffffff',
+            color: isDark ? '#fff' : '#0f172a',
             confirmButtonColor: '#10b981'
           });
         } else {
@@ -64,8 +75,8 @@ const decreaseQty = async () => {
             title: 'Oops!',
             text: 'Something went wrong while removing the item.',
             icon: 'error',
-            background: '#0f172a',
-            color: '#fff',
+            background: isDark ? '#0f172a' : '#ffffff',
+            color: isDark ? '#fff' : '#0f172a',
             confirmButtonColor: '#10b981'
           });
         }
@@ -75,9 +86,9 @@ const decreaseQty = async () => {
 
   return (
     <div className="w-full">
-      <div className="group flex flex-col md:flex-row items-center gap-6 p-6 rounded-3xl bg-white/5 backdrop-blur-3xl border border-white/10 shadow-2xl hover:shadow-emerald-500/10 transition-all duration-500 hover:border-emerald-500/30">
+      <div className={`group flex flex-col md:flex-row items-center gap-6 p-6 rounded-3xl backdrop-blur-3xl border shadow-xl hover:shadow-emerald-500/10 transition-all duration-500 hover:border-emerald-500/30 ${cardBg}`}>
         {/* Image Section */}
-        <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-2xl bg-white/5 border border-white/5 p-2">
+        <div className={`relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-2xl border p-2 ${imgBg}`}>
           <Image
             src={image}
             alt={title}
@@ -89,26 +100,26 @@ const decreaseQty = async () => {
 
         {/* Title Section */}
         <div className="flex-1 text-center md:text-left space-y-1">
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-400">Premium Choice</p>
-          <h3 className="font-black text-white text-xl leading-tight line-clamp-1">{title}</h3>
-          <p className="text-slate-400 font-bold text-sm">Unit Price: <span className="text-white">${price}</span></p>
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500">Premium Choice</p>
+          <h3 className={`font-black text-xl leading-tight line-clamp-1 ${headingText}`}>{title}</h3>
+          <p className={`font-bold text-sm ${mutedText}`}>Unit Price: <span className={headingText}>${price}</span></p>
         </div>
 
         {/* Quantity Controller */}
-        <div className="flex items-center gap-4 bg-slate-950/50 px-4 py-2 rounded-2xl border border-white/10 shadow-inner">
+        <div className={`flex items-center gap-4 px-4 py-2 rounded-2xl border shadow-inner ${ctrlBg}`}>
           <button
             onClick={decreaseQty}
             disabled={quantity <= 1}
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-slate-400 hover:bg-emerald-500 hover:text-white disabled:opacity-30 transition-all active:scale-90"
+            className={`w-10 h-10 flex items-center justify-center rounded-xl hover:bg-emerald-500 hover:text-white disabled:opacity-30 transition-all active:scale-90 ${btnBg}`}
           >
             <Minus size={18} />
           </button>
 
-          <span className="w-8 text-center font-black text-xl text-white">{quantity}</span>
+          <span className={`w-8 text-center font-black text-xl ${headingText}`}>{quantity}</span>
 
           <button
             onClick={increaseQty}
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-slate-400 hover:bg-emerald-500 hover:text-white transition-all active:scale-90"
+            className={`w-10 h-10 flex items-center justify-center rounded-xl hover:bg-emerald-500 hover:text-white transition-all active:scale-90 ${btnBg}`}
           >
             <Plus size={18} />
           </button>
@@ -116,8 +127,8 @@ const decreaseQty = async () => {
 
         {/* Total Price Section */}
         <div className="text-center md:text-right min-w-[120px] space-y-1">
-          <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Item Total</p>
-          <p className="text-2xl font-black text-emerald-400">
+          <p className={`text-[10px] font-black uppercase tracking-widest ${mutedText}`}>Item Total</p>
+          <p className="text-2xl font-black text-emerald-500">
             <span className="text-lg mr-0.5">$</span>
             {(price * quantity).toLocaleString()}
           </p>

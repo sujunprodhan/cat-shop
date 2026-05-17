@@ -96,8 +96,8 @@ const AdminSupport = () => {
   };
 
   const filteredConversations = conversations.filter(c =>
-    c.senderName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.lastMessage?.toLowerCase().includes(searchTerm.toLowerCase())
+    (c.senderName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (c.lastMessage || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   /* ── Data fetching ── */
@@ -112,16 +112,18 @@ const AdminSupport = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const activeChatId = activeChat?._id;
+
   useEffect(() => {
-    if (!activeChat) return;
+    if (!activeChatId) return;
     const loadMsgs = async () => {
-      const data = await getMessages(activeChat._id);
+      const data = await getMessages(activeChatId);
       setMessages(data);
     };
     loadMsgs();
     const interval = setInterval(loadMsgs, 3000);
     return () => clearInterval(interval);
-  }, [activeChat]);
+  }, [activeChatId]);
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
