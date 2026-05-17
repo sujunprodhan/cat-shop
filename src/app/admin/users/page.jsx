@@ -18,11 +18,11 @@ export default async function AdminUsersPage() {
   const users = result.success ? result.data : [];
 
   return (
-    <div className="min-h-screen bg-slate-950 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
           <div>
-            <h1 className="text-4xl font-black text-white tracking-tight flex items-center gap-4">
+            <h1 className="text-4xl font-black tracking-tight flex items-center gap-4">
               <Users size={40} className="text-blue-500" />
               User <span className="text-blue-500">Management</span>
             </h1>
@@ -33,7 +33,7 @@ export default async function AdminUsersPage() {
           </div>
         </div>
 
-        <div className="bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-2 sm:p-4 shadow-2xl overflow-hidden">
+        <div className="backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-2 sm:p-4 shadow-2xl overflow-hidden bg-white/5">
           <UserManagement initialUsers={users} currentAdminEmail={session.user.email} />
         </div>
       </div>

@@ -23,11 +23,11 @@ export default async function AdminOrdersPage() {
   }));
 
   return (
-    <div className="min-h-screen bg-slate-950 pt-24 pb-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
           <div>
-            <h1 className="text-4xl font-black text-white tracking-tight">
+            <h1 className="text-4xl font-black tracking-tight text-[var(--page-heading,inherit)]">
               Admin <span className="text-blue-500">Orders Panel</span>
             </h1>
             <p className="text-slate-400 mt-2 font-medium">Manage and confirm pending orders from your customers.</p>
@@ -37,7 +37,7 @@ export default async function AdminOrdersPage() {
           </div>
         </div>
 
-        <div className="bg-slate-900/50 backdrop-blur-xl border border-white/5 rounded-[2rem] p-6 sm:p-10 shadow-2xl overflow-hidden">
+        <div className="backdrop-blur-xl border border-white/10 rounded-[2rem] p-6 sm:p-10 shadow-2xl overflow-hidden bg-white/5">
           <AdminOrderList orders={serializedOrders} />
         </div>
       </div>

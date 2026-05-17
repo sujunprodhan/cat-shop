@@ -35,8 +35,6 @@ export const updateUserRole = async (userId, newRole) => {
 
     // Prevent admin from demoting themselves (optional but recommended)
     if (session.user.email === (await dbConnect(Collection.USERS).findOne({ _id: new ObjectId(userId) }))?.email) {
-        // We can allow it, but let's be careful. Actually, for a single-admin system it's bad.
-        // But if they have multiple admins, it's fine.
     }
 
     const userCollection = dbConnect(Collection.USERS);

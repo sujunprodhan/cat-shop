@@ -3,31 +3,36 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
+import { useTheme } from '@/provider/ThemeProvider';
 
 const Navlink = ({ href, children, scrolled }) => {
   const path = usePathname();
+  const { theme } = useTheme();
+  const isDark = theme === 'night';
 
   const isActive = href === '/' ? path === '/' : path?.startsWith(href);
-  
+
+  const textClass = isActive
+    ? 'text-emerald-500'
+    : isDark
+    ? 'text-slate-300 hover:text-emerald-400'
+    : 'text-slate-700 hover:text-emerald-600';
+
   return (
     <Link
       href={href}
-      className={`relative group px-1 py-2 font-bold transition-colors duration-300 ${
-        isActive 
-          ? 'text-emerald-400' 
-          : 'text-slate-300 hover:text-emerald-400'
-      }`}
+      className={`relative group px-1 py-2 font-bold transition-colors duration-300 ${textClass}`}
     >
       <span className="relative z-10">{children}</span>
-      
-      {/* Underline Animation */}
-      <span 
+
+      {/* Underline animation */}
+      <span
         className={`absolute bottom-0 left-0 h-0.5 bg-emerald-500 transition-all duration-300 ${
           isActive ? 'w-full' : 'w-0 group-hover:w-full'
         }`}
-      ></span>
+      />
 
-      {/* Subtle background glow for active state */}
+      {/* Active glow pill */}
       {isActive && (
         <motion.span
           layoutId="nav-active-glow"
@@ -40,4 +45,3 @@ const Navlink = ({ href, children, scrolled }) => {
 };
 
 export default Navlink;
-

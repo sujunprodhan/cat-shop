@@ -4,7 +4,11 @@ import { Collection, dbConnect } from '@/lib/dbConnect';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/authOptions';
 
-export const sendChatMessage = async (content, receiverEmail = 'admin') => {
+export const sendChatMessage = async (
+  content,
+  receiverEmail = 'admin',
+  attachment = null   // { url, name, isImage }
+) => {
   try {
     const session = await getServerSession(authOptions);
     if (!session || !session.user) return { success: false, message: 'Unauthorized' };
@@ -13,14 +17,17 @@ export const sendChatMessage = async (content, receiverEmail = 'admin') => {
 
     const message = {
       senderEmail: session.user.email,
-      senderName: session.user.name,
+      senderName:  session.user.name,
       senderImage: session.user.image,
       receiverEmail,
       content,
       createdAt: new Date(),
       status: 'unread',
-      // chatId always = the user's email (for grouping)
       chatId: receiverEmail === 'admin' ? session.user.email : receiverEmail,
+      // Attachment fields (only saved when a file is attached)
+      ...(attachment?.url  && { attachmentUrl:     attachment.url }),
+      ...(attachment?.name && { attachmentName:    attachment.name }),
+      ...(attachment       && { attachmentIsImage: attachment.isImage ?? false }),
     };
 
     await chatCollection.insertOne(message);

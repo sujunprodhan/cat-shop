@@ -1,17 +1,8 @@
 'use server';
 
-// You can use Google Gemini, OpenAI, or any other AI SDK here
-// For this example, we'll demonstrate the logic. 
-// You'll need to install: npm install @google/generative-ai
 
 export const getAIResponse = async (userMessage, history = []) => {
   try {
-    // If you have GOOGLE_GENERIC_AI_KEY in your .env
-    // const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_KEY);
-    // const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-    
-    // For now, let's simulate a professional AI response
-    // In a real scenario, you would call the AI API here
     
     await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate AI thinking
 

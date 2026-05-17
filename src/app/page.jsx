@@ -4,6 +4,7 @@ import ProductSkeleton from '@/components/skeletons/ProductSkeleton';
 import Features from '@/components/home/Features';
 import Categories from '@/components/home/Categories';
 import PromoBanner from '@/components/home/PromoBanner';
+import ProductsSectionHeading from '@/components/home/ProductsSectionHeading';
 import { Suspense } from 'react';
 
 export default async function Home({ searchParams }) {
@@ -18,12 +19,7 @@ export default async function Home({ searchParams }) {
       <Categories />
       
       <section className="max-w-7xl mx-auto px-6 space-y-16">
-        <div className="space-y-4">
-          <p className="text-emerald-400 font-black uppercase tracking-[0.4em] text-xs">Premium selection</p>
-          <h2 className="text-5xl lg:text-6xl font-black text-white tracking-tighter">
-            Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-400">Products</span>
-          </h2>
-        </div>
+        <ProductsSectionHeading />
 
         <Suspense fallback={
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 md:gap-8">
