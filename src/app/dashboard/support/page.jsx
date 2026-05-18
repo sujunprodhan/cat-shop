@@ -6,7 +6,7 @@ import {
   Send, Cat, ShieldCheck, Smile, Paperclip,
   CheckCheck, LifeBuoy, Sparkles, X, ImageIcon, FileText
 } from 'lucide-react';
-import { getMessages, sendChatMessage } from '@/actions/server/chat';
+import { getMessages, sendChatMessage, markMessagesAsRead } from '@/actions/server/chat';
 import { useSession } from 'next-auth/react';
 import { useTheme } from '@/provider/ThemeProvider';
 
@@ -60,6 +60,7 @@ const DashboardSupport = () => {
     const load = async () => {
       const data = await getMessages(userEmail);
       setMessages(data);
+      await markMessagesAsRead(userEmail);
     };
     load();
     const interval = setInterval(load, 3000);

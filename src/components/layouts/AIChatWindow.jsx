@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, User, Sparkles, X, Minimize2, Cat, MessageSquare } from 'lucide-react';
 import { getAIResponse } from '@/actions/server/aiChat';
-import { getMessages, sendChatMessage } from '@/actions/server/chat';
+import { getMessages, sendChatMessage, markMessagesAsRead } from '@/actions/server/chat';
 import { useSession } from 'next-auth/react';
 
 const AIChatWindow = ({ onClose }) => {
@@ -28,6 +28,7 @@ const AIChatWindow = ({ onClose }) => {
             content: m.content
           }));
           setMessages(formatted);
+          await markMessagesAsRead(session.user.email);
         }
       };
       loadMessages();
@@ -51,6 +52,10 @@ const AIChatWindow = ({ onClose }) => {
     setInput('');
 
     if (isHumanMode) {
+      if (!session || !session.user) {
+        setMessages(prev => [...prev, { role: 'ai', content: "You must be logged in to chat with a human agent. Please log in first." }]);
+        return;
+      }
       await sendChatMessage(tempInput);
       return;
     }

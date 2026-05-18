@@ -62,6 +62,29 @@ export const getMessages = async (userEmail) => {
   }
 };
 
+export const markMessagesAsRead = async (chatId) => {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) return;
+
+    const chatCollection = dbConnect(Collection.CHATS);
+    
+    if (session.role === 'admin') {
+      await chatCollection.updateMany(
+        { chatId, receiverEmail: 'admin', status: 'unread' },
+        { $set: { status: 'read' } }
+      );
+    } else {
+      await chatCollection.updateMany(
+        { chatId, receiverEmail: session.user.email, status: 'unread' },
+        { $set: { status: 'read' } }
+      );
+    }
+  } catch (error) {
+    console.error('Mark as read error:', error);
+  }
+};
+
 export const getAllConversations = async () => {
   try {
     const session = await getServerSession(authOptions);
@@ -79,7 +102,17 @@ export const getAllConversations = async () => {
           lastMessage: { $last: '$content' },
           lastActiveAt: { $last: '$createdAt' },
           unreadCount: {
-            $sum: { $cond: [{ $eq: ['$status', 'unread'] }, 1, 0] },
+            $sum: { 
+              $cond: [
+                { $and: [
+                    { $eq: ['$status', 'unread'] },
+                    { $eq: ['$receiverEmail', 'admin'] }
+                  ]
+                }, 
+                1, 
+                0
+              ] 
+            },
           },
         },
       },

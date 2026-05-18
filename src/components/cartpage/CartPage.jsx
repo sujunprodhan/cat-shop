@@ -28,20 +28,54 @@ const CartPage = ({ item, removeItem, updateQuantity,  }) => {
     if (result.success) {
       updateCartCount();
       updateQuantity(_id, quantity + 1);
+      Swal.fire({
+        title: 'Success!',
+        text: 'Quantity Increased',
+        icon: 'success',
+        background: isDark ? '#0f172a' : '#ffffff',
+        color: isDark ? '#fff' : '#0f172a',
+        confirmButtonColor: '#10b981'
+      });
+    } else if (result.message) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: result.message,
+        background: isDark ? '#0f172a' : '#ffffff',
+        color: isDark ? '#fff' : '#0f172a',
+        confirmButtonColor: '#10b981',
+      });
     }
   };
 
   // Decrease quantity
-const decreaseQty = async () => {
-  if (quantity <= 1) return;
+  const decreaseQty = async () => {
+    if (quantity <= 1) return;
 
-  const result = await decreaseItemDb(_id, quantity);
+    const result = await decreaseItemDb(_id, quantity);
 
-  if (result.success) {
-    updateCartCount();
-    updateQuantity(_id, quantity - 1);
-  }
-};
+    if (result.success) {
+      updateCartCount();
+      updateQuantity(_id, quantity - 1);
+      Swal.fire({
+        title: 'Success!',
+        text: 'Quantity Decreased',
+        icon: 'success',
+        background: isDark ? '#0f172a' : '#ffffff',
+        color: isDark ? '#fff' : '#0f172a',
+        confirmButtonColor: '#10b981'
+      });
+    } else if (result.message) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: result.message,
+        background: isDark ? '#0f172a' : '#ffffff',
+        color: isDark ? '#fff' : '#0f172a',
+        confirmButtonColor: '#10b981',
+      });
+    }
+  };
 
 
   const handleRemove = async () => {

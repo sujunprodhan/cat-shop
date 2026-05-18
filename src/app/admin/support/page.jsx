@@ -7,7 +7,7 @@ import {
   Phone, Video, Info, CheckCheck, Image as ImageIcon,
   FileText, Paperclip, X
 } from 'lucide-react';
-import { getAllConversations, getMessages, sendChatMessage } from '@/actions/server/chat';
+import { getAllConversations, getMessages, sendChatMessage, markMessagesAsRead } from '@/actions/server/chat';
 import { useSession } from 'next-auth/react';
 import { useTheme } from '@/provider/ThemeProvider';
 
@@ -119,6 +119,7 @@ const AdminSupport = () => {
     const loadMsgs = async () => {
       const data = await getMessages(activeChatId);
       setMessages(data);
+      await markMessagesAsRead(activeChatId);
     };
     loadMsgs();
     const interval = setInterval(loadMsgs, 3000);
