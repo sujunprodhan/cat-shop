@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Home, CreditCard, User, Settings, HelpCircle, LogOut,
-  Menu, X, Sparkles, ShoppingBag, Heart, Users, ShieldAlert, MessageSquare
+  Menu, X, Sparkles, ShoppingBag, Heart, Users, ShieldAlert, MessageSquare, Archive
 } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
 import { useTheme } from '@/provider/ThemeProvider';
@@ -29,6 +29,7 @@ export default function DashboardLayout({ children }) {
 
   const adminNavItems = [
     { name: 'Manage Orders',    href: '/admin/orders',  icon: ShieldAlert },
+    { name: 'Manage Products',  href: '/admin/products',icon: Archive },
     { name: 'Manage Users',     href: '/admin/users',   icon: Users },
     { name: 'Customer Support', href: '/admin/support', icon: MessageSquare },
   ];

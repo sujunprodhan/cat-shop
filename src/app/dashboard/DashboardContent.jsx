@@ -1,14 +1,17 @@
 'use client';
 
 import React from 'react';
-import { Wallet, Users, ShoppingBag, TrendingUp, ArrowUpRight, Activity } from 'lucide-react';
+import { Wallet, Users, ShoppingBag, TrendingUp, ArrowUpRight, Activity, Plus } from 'lucide-react';
 import { useTheme } from '@/provider/ThemeProvider';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 export default function DashboardContent({ userName, totalOrders, totalSpent }) {
   const { theme } = useTheme();
+  const { data: session } = useSession();
   const isDark = theme === 'night';
 
-  /* ── Theme tokens ── */
+
   const cardBg    = isDark ? 'bg-slate-900/40 border-white/5'       : 'bg-white border-slate-200 shadow-sm';
   const heading   = isDark ? 'text-white'    : 'text-slate-900';
   const subText   = isDark ? 'text-slate-400' : 'text-slate-500';
@@ -31,7 +34,7 @@ export default function DashboardContent({ userName, totalOrders, totalSpent }) 
 
   return (
     <div className="space-y-6">
-      {/* ── Stat Cards ── */}
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, i) => (
           <div key={i} className={`backdrop-blur-xl border rounded-[2rem] p-6 relative overflow-hidden group ${cardBg}`}>
@@ -53,7 +56,7 @@ export default function DashboardContent({ userName, totalOrders, totalSpent }) 
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* ── Welcome Banner (always dark for the gradient aesthetic) ── */}
+
         <div className="lg:col-span-7 bg-[#0b1437]/90 backdrop-blur-xl border border-white/5 rounded-[2rem] p-8 relative overflow-hidden flex flex-col justify-between min-h-[300px] shadow-2xl">
           <div className="absolute inset-0 z-0 opacity-60 bg-cover bg-right-bottom mix-blend-lighten"
                style={{ backgroundImage: "url('https://images.unsplash.com/photo-1542385151-efd9000785a0?q=80&w=1200&auto=format&fit=crop')" }} />
@@ -64,13 +67,20 @@ export default function DashboardContent({ userName, totalOrders, totalSpent }) 
             <p className="text-slate-300 text-sm leading-relaxed mb-10 font-medium">
               Glad to see you again! You have successfully placed {totalOrders} orders. Keep shopping to unlock new rewards.
             </p>
-            <button className="text-white font-bold text-sm flex items-center gap-2 hover:text-blue-400 transition-colors group">
-              Tap to view details <ArrowUpRight size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-            </button>
+            <div className="flex items-center gap-4">
+              <button className="text-white font-bold text-sm flex items-center gap-2 hover:text-blue-400 transition-colors group">
+                Tap to view details <ArrowUpRight size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              </button>
+              {session?.role === 'admin' && (
+                <Link href="/admin/products/new" className="bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-sm px-4 py-2 rounded-xl flex items-center gap-2 transition-colors">
+                  <Plus size={16} /> Add Product
+                </Link>
+              )}
+            </div>
           </div>
         </div>
 
-        {/* ── Satisfaction Ring ── */}
+
         <div className={`lg:col-span-5 backdrop-blur-xl border rounded-[2rem] p-8 flex flex-col ${cardBg}`}>
           <h3 className={`font-bold text-lg mb-1 ${heading}`}>Store Satisfaction</h3>
           <p className={`text-sm mb-8 ${subText}`}>Based on your purchases</p>
@@ -93,7 +103,7 @@ export default function DashboardContent({ userName, totalOrders, totalSpent }) 
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* ── Login Frequency Chart ── */}
+
         <div className={`lg:col-span-2 backdrop-blur-xl border rounded-[2rem] p-8 ${cardBg}`}>
           <h3 className={`font-bold text-lg mb-1 ${heading}`}>Login Frequency</h3>
           <p className="text-sm font-medium mb-8">
@@ -134,7 +144,7 @@ export default function DashboardContent({ userName, totalOrders, totalSpent }) 
           </div>
         </div>
 
-        {/* ── Activity ── */}
+
         <div className={`backdrop-blur-xl border rounded-[2rem] p-8 flex flex-col ${cardBg}`}>
           <h3 className={`font-bold text-lg mb-1 ${heading}`}>Your Activity</h3>
           <p className="text-sm font-medium mb-8">

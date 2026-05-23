@@ -5,15 +5,17 @@ import { ShoppingBag, Beef, Sofa, Ghost } from 'lucide-react';
 import Link from 'next/link';
 import { useTheme } from '@/provider/ThemeProvider';
 
-const Categories = () => {
+const Categories = ({ counts = {} }) => {
   const { theme } = useTheme();
   const isDark = theme === 'night';
 
+  const getCount = (key) => counts[key] || 0;
+
   const cats = [
-    { name: 'Cat Food',    icon: <Beef size={28} />,        items: '120+ Products' },
-    { name: 'Accessories', icon: <ShoppingBag size={28} />, items: '85+ Products'  },
-    { name: 'Beds & Mats', icon: <Sofa size={28} />,        items: '40+ Products'  },
-    { name: 'Interactive', icon: <Ghost size={28} />,       items: '60+ Products'  },
+    { name: 'Cat Food',    icon: <Beef size={28} />,        items: `${getCount('cat food')} Products` },
+    { name: 'Accessories', icon: <ShoppingBag size={28} />, items: `${getCount('accessories')} Products`  },
+    { name: 'Beds & Mats', icon: <Sofa size={28} />,        items: `${getCount('beds & mats')} Products`  },
+    { name: 'Interactive', icon: <Ghost size={28} />,       items: `${getCount('interactive')} Products`  },
   ];
 
   const headingCls  = isDark ? 'text-white'    : 'text-slate-900';
@@ -54,7 +56,7 @@ const Categories = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {cats.map((cat, i) => (
             <Link
-              href={`/products?category=${cat.name.toLowerCase()}`}
+              href={`/products?category=${encodeURIComponent(cat.name.toLowerCase())}`}
               key={i}
               className={`group relative h-72 rounded-[3rem] overflow-hidden border p-10 flex flex-col justify-between hover:-translate-y-2 transition-all duration-500 ${cardBg}`}
             >

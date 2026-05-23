@@ -14,7 +14,7 @@ const ProductInfoPanel = ({ product }) => {
   const isDark = theme === 'night';
 
   const { title, price, discount, reviews, sold, ratings } = product;
-  const reviewCount = Array.isArray(reviews) ? reviews.length : (reviews || 0);
+  const reviewCount = Array.isArray(reviews) ? reviews.length : 0;
 
   /* ── Theme tokens ── */
   const heading  = isDark ? 'text-white'    : 'text-slate-900';
@@ -50,10 +50,6 @@ const ProductInfoPanel = ({ product }) => {
               <span className={`font-bold mr-1 ${isDark ? 'text-white' : 'text-slate-800'}`}>{reviewCount}</span> Reviews
             </span>
           </div>
-          <div className={`h-4 w-px ${divider}`} />
-          <span className={`px-4 py-2 rounded-xl font-black text-xs uppercase tracking-widest ${soldBadge}`}>
-            {sold || 0} Sold
-          </span>
         </div>
 
         <div className="flex items-end gap-6 mb-10">

@@ -3,7 +3,7 @@
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import React, { useState, useRef, useEffect } from 'react';
-import { LogOut, UserPlus, LogIn, LayoutDashboard, ShoppingBag, User, ShieldAlert, Users } from 'lucide-react';
+import { LogOut, UserPlus, LogIn, LayoutDashboard, ShoppingBag, User, ShieldAlert, Users, Archive, Plus } from 'lucide-react';
 import { useTheme } from '@/provider/ThemeProvider';
 
 const AuthButton = () => {
@@ -101,6 +101,22 @@ const AuthButton = () => {
                     >
                       <Users size={18} />
                       Manage Users
+                    </Link>
+                    <Link
+                      href="/admin/products"
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center gap-3 px-3 py-2.5 text-sm rounded-xl transition-colors font-medium ${adminLink}`}
+                    >
+                      <Archive size={18} />
+                      Manage Products
+                    </Link>
+                    <Link
+                      href="/admin/products/new"
+                      onClick={() => setIsOpen(false)}
+                      className={`flex items-center gap-3 px-3 py-2.5 text-sm rounded-xl transition-colors font-medium ${adminLink}`}
+                    >
+                      <Plus size={18} />
+                      Add Product
                     </Link>
                   </>
                 )}

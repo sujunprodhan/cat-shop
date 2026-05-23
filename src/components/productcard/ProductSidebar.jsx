@@ -4,12 +4,20 @@ import React from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { ChevronRight, Filter, Sparkles } from 'lucide-react';
+import { useTheme } from '@/provider/ThemeProvider';
 
 const ProductSidebar = ({ categories = [] }) => {
   const searchParams = useSearchParams();
+  const { theme } = useTheme();
+  const isDark = theme === 'night';
+
   const currentCategory = searchParams.get('category');
   const currentSort = searchParams.get('sort');
   const currentSearch = searchParams.get('search');
+
+  const cardBg = isDark ? 'bg-white/5 border-white/10' : 'bg-white border-slate-200';
+  const headingCls = isDark ? 'text-white' : 'text-slate-900';
+  const inactiveLinkCls = isDark ? 'text-slate-400 hover:bg-white/5 hover:text-white' : 'text-slate-500 hover:bg-emerald-50 hover:text-emerald-600';
 
   const buildUrl = (category) => {
     const params = new URLSearchParams(searchParams);
@@ -25,7 +33,7 @@ const ProductSidebar = ({ categories = [] }) => {
   return (
     <div className="space-y-10 sticky top-28">
       {/* Category Section */}
-      <div className="bg-white/5 backdrop-blur-3xl rounded-[2.5rem] border border-white/10 p-8 shadow-2xl relative overflow-hidden group">
+      <div className={`backdrop-blur-3xl rounded-[2.5rem] border p-8 shadow-2xl relative overflow-hidden group ${cardBg}`}>
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-emerald-500/10 blur-[80px] rounded-full group-hover:bg-emerald-500/20 transition-all duration-700"></div>
         
         <div className="relative z-10">
@@ -33,13 +41,13 @@ const ProductSidebar = ({ categories = [] }) => {
             <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
               <Filter size={18} />
             </div>
-            <h3 className="text-xl font-black text-white tracking-tight uppercase">Categories</h3>
+            <h3 className={`text-xl font-black tracking-tight uppercase ${headingCls}`}>Categories</h3>
           </div>
 
           <div className="space-y-2">
             <Link
               href={buildUrl('')}
-              className={`flex items-center justify-between w-full px-5 py-4 rounded-2xl transition-all duration-300 group/link ${!currentCategory ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/20' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+              className={`flex items-center justify-between w-full px-5 py-4 rounded-2xl transition-all duration-300 group/link ${!currentCategory ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/20' : inactiveLinkCls}`}
             >
               <span className="text-sm font-bold uppercase tracking-widest">All Products</span>
               {!currentCategory && <ChevronRight size={16} className="text-white" />}
@@ -51,7 +59,7 @@ const ProductSidebar = ({ categories = [] }) => {
                 <Link
                   key={category}
                   href={buildUrl(category)}
-                  className={`flex items-center justify-between w-full px-5 py-4 rounded-2xl transition-all duration-300 group/link ${isActive ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/20' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}
+                  className={`flex items-center justify-between w-full px-5 py-4 rounded-2xl transition-all duration-300 group/link ${isActive ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/20' : inactiveLinkCls}`}
                 >
                   <span className="text-sm font-bold uppercase tracking-widest truncate max-w-[150px]">{category}</span>
                   {isActive && <ChevronRight size={16} className="text-white" />}

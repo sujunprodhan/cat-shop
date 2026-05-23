@@ -41,7 +41,7 @@ export const createOrder = async (orderData) => {
     const result = await orderCollection.insertOne(newOrder);
 
     if (result.acknowledged) {
-      // Increment sold count for each item
+      // Increment item
       for (const item of items) {
         if (item.productId) {
           await productCollection.updateOne(
@@ -51,7 +51,7 @@ export const createOrder = async (orderData) => {
         }
       }
 
-      // invoice template ekhane
+      // invoice template
       const orderForInvoice = {
         orderId: result.insertedId.toString(),
         items,
@@ -60,7 +60,7 @@ export const createOrder = async (orderData) => {
       };
       const invoiceTemplate = generateInvoiceHTML(orderForInvoice);
 
-      // email ekhane
+      // send email
       await sendEmail({
         to: email,
         subject: 'Your Order Invoice - Cat Shop',

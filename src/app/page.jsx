@@ -6,9 +6,11 @@ import Categories from '@/components/home/Categories';
 import PromoBanner from '@/components/home/PromoBanner';
 import ProductsSectionHeading from '@/components/home/ProductsSectionHeading';
 import { Suspense } from 'react';
+import { getCategoryCounts } from '@/actions/server/product';
 
 export default async function Home({ searchParams }) {
   const { page } = (await searchParams) || {};
+  const counts = await getCategoryCounts();
 
   return (
     <div className="space-y-10 md:space-y-20 pb-20">
@@ -16,7 +18,7 @@ export default async function Home({ searchParams }) {
       
       <Features />
       
-      <Categories />
+      <Categories counts={counts} />
       
       <section className="max-w-7xl mx-auto px-6 space-y-16">
         <ProductsSectionHeading />

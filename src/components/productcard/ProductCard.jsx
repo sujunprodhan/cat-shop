@@ -16,7 +16,7 @@ const ProductCard = ({ product }) => {
   const { theme } = useTheme();
   const isDark = theme === 'night';
 
-  const reviewCount = Array.isArray(reviews) ? reviews.length : (reviews || 0);
+  const reviewCount = Array.isArray(reviews) ? reviews.length : 0;
 
   const handleToggleFavorite = async (e) => {
     e.preventDefault();
@@ -25,17 +25,14 @@ const ProductCard = ({ product }) => {
     const res = await toggleFavorite(_id.toString());
     if (res.success) {
       updateFavorites();
-      const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 2000,
-        timerProgressBar: true,
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: res.message,
         background: isDark ? '#0f172a' : '#ffffff',
         color: isDark ? '#fff' : '#0f172a',
-        iconColor: '#10b981',
+        confirmButtonColor: '#10b981',
       });
-      Toast.fire({ icon: 'success', title: res.message });
     } else {
       Swal.fire({
         icon: 'error',
@@ -91,19 +88,7 @@ const ProductCard = ({ product }) => {
           <Heart size={18} className={favorited ? 'fill-white' : 'transition-colors'} />
         </button>
 
-        {/* Badges */}
-        <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
-          {sold > 100 && (
-            <span className="bg-rose-500/20 text-rose-400 border border-rose-500/30 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest backdrop-blur-md">
-              Hot
-            </span>
-          )}
-          {sold < 20 && (
-            <span className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest backdrop-blur-md">
-              New
-            </span>
-          )}
-        </div>
+
 
         {/* Add to cart overlay */}
         <div className="absolute inset-x-0 bottom-0 p-4 translate-y-4 opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 z-10">
@@ -121,7 +106,6 @@ const ProductCard = ({ product }) => {
             </div>
             <span className={`text-[10px] font-bold ${metaCls}`}>({reviewCount})</span>
           </div>
-          <span className={`text-[10px] font-black uppercase tracking-widest ${metaCls}`}>{sold || 0} Sold</span>
         </div>
 
         {/* Title */}

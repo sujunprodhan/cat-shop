@@ -35,7 +35,7 @@ const Navbar = () => {
     { name: 'Contact', href: '/contact' },
   ];
 
-  /* ── Computed class strings ─────────────────────────────── */
+
   const navBg =
     scrolled || !isHome
       ? isDark
@@ -65,7 +65,7 @@ const Navbar = () => {
 
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
 
-        {/* ── Logo ── */}
+
         <Link href="/" className="group flex items-center gap-2">
           <div className="w-10 h-10 bg-emerald-600 rounded-xl flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-300 shadow-lg shadow-emerald-500/20">
             <span className="text-white font-black text-xl italic">C</span>
@@ -80,7 +80,7 @@ const Navbar = () => {
           </div>
         </Link>
 
-        {/* ── Desktop Menu ── */}
+
         <div className="hidden lg:flex items-center gap-10">
           <ul className="flex items-center gap-8">
             {navItems.map((item) => (
@@ -93,10 +93,10 @@ const Navbar = () => {
           <div className={`h-6 w-px ${divider}`} />
 
           <div className="flex items-center gap-5">
-            {/* Theme Toggle */}
+
             <ThemeToggle />
 
-            {/* Search */}
+
             <button className={`p-2.5 rounded-full ${iconBase} ${iconHoverEm} ${iconBtnHover} transition-all duration-300 relative group`}>
               <Search size={20} />
               <span className={`absolute -bottom-10 left-1/2 -translate-x-1/2 text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap ${isDark ? 'bg-slate-900 text-white' : 'bg-slate-800 text-white'}`}>
@@ -104,7 +104,7 @@ const Navbar = () => {
               </span>
             </button>
 
-            {/* Cart */}
+
             <Link href="/cart" className={`p-2.5 rounded-full ${iconBase} ${iconHoverEm} ${iconBtnHover} transition-all duration-300 relative group`}>
               <ShoppingCart size={20} />
               {cartCount > 0 && (
@@ -114,7 +114,7 @@ const Navbar = () => {
               )}
             </Link>
 
-            {/* Favorites */}
+
             <Link href="/dashboard/favorites" className={`p-2.5 rounded-full ${iconBase} ${iconHoverRose} ${iconBtnHover} transition-all duration-300 relative group`}>
               <Heart size={20} />
               {favoriteCount > 0 && (
@@ -130,7 +130,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* ── Mobile Header Icons ── */}
+
         <div className="lg:hidden flex items-center gap-3">
           <ThemeToggle />
 
@@ -159,7 +159,7 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* ── Mobile Menu Overlay ── */}
+
       <AnimatePresence>
         {open && (
           <motion.div

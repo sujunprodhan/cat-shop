@@ -39,13 +39,34 @@ export const getProducts = async (page = 1, limit = 6, search = '', sort = '', c
 };
 
 export const getCategories = async () => {
+  const defaultCategories = ["cat food", "accessories", "beds & mats", "interactive"];
   try {
     const collection = dbConnect(Collection.PRODUCTS);
-    const categories = await collection.distinct('category', { category: { $ne: null, $exists: true } });
-    return categories;
+    const categories = await collection.distinct('category');
+    return categories && categories.length > 0 ? categories : defaultCategories;
   } catch (error) {
     console.error('Error fetching categories:', error);
-    return [];
+    return defaultCategories;
+  }
+};
+
+export const getCategoryCounts = async () => {
+  try {
+    const collection = dbConnect(Collection.PRODUCTS);
+    const counts = await collection.aggregate([
+      { $group: { _id: "$category", count: { $sum: 1 } } }
+    ]).toArray();
+    
+    const countMap = {};
+    counts.forEach(c => {
+      if (c._id) {
+        countMap[c._id.toLowerCase()] = c.count;
+      }
+    });
+    return countMap;
+  } catch (error) {
+    console.error('Error fetching category counts:', error);
+    return {};
   }
 };
 
@@ -151,5 +172,60 @@ export const getRelatedProducts = async (productId, category = '') => {
   } catch (error) {
     console.error('Error fetching related products:', error);
     return [];
+  }
+};
+
+export const createProduct = async (productData) => {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.role !== 'admin') {
+      return { success: false, message: 'Unauthorized' };
+    }
+    const collection = dbConnect(Collection.PRODUCTS);
+    const result = await collection.insertOne(productData);
+    if (result.acknowledged) {
+      return { success: true, message: 'Product created successfully' };
+    }
+    return { success: false, message: 'Failed to create product' };
+  } catch (error) {
+    console.error('Error creating product:', error);
+    return { success: false, message: 'An internal error occurred' };
+  }
+};
+
+export const updateProduct = async (id, productData) => {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.role !== 'admin') {
+      return { success: false, message: 'Unauthorized' };
+    }
+    const collection = dbConnect(Collection.PRODUCTS);
+    const { _id, ...updateData } = productData;
+    const result = await collection.updateOne({ _id: new ObjectId(id) }, { $set: updateData });
+    if (result.acknowledged) {
+      return { success: true, message: 'Product updated successfully' };
+    }
+    return { success: false, message: 'Failed to update product' };
+  } catch (error) {
+    console.error('Error updating product:', error);
+    return { success: false, message: 'An internal error occurred' };
+  }
+};
+
+export const deleteProduct = async (id) => {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session || session.role !== 'admin') {
+      return { success: false, message: 'Unauthorized' };
+    }
+    const collection = dbConnect(Collection.PRODUCTS);
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+    if (result.acknowledged) {
+      return { success: true, message: 'Product deleted successfully' };
+    }
+    return { success: false, message: 'Failed to delete product' };
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    return { success: false, message: 'An internal error occurred' };
   }
 };

@@ -69,11 +69,17 @@ const Footer = () => {
           <div className="space-y-8">
             <h4 className={`font-black text-xs uppercase tracking-[0.3em] ml-1 ${headTxt}`}>Explore</h4>
             <ul className="space-y-4">
-              {['New Arrivals', 'Best Sellers', 'Cat Food', 'Accessories', 'Toys'].map((item) => (
-                <li key={item}>
-                  <Link href="#" className={`transition-colors flex items-center group ${linkCls}`}>
+              {[
+                { name: 'New Arrivals', href: '/products' },
+                { name: 'Best Sellers', href: '/products' },
+                { name: 'Cat Food', href: '/products?category=cat%20food' },
+                { name: 'Accessories', href: '/products?category=accessories' },
+                { name: 'Interactive Toys', href: '/products?category=interactive' }
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link href={item.href} className={`transition-colors flex items-center group ${linkCls}`}>
                     <ArrowRight size={12} className="mr-2 opacity-0 -ml-4 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                    {item}
+                    {item.name}
                   </Link>
                 </li>
               ))}
